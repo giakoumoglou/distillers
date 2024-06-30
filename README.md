@@ -24,7 +24,7 @@
 (FSP) - A Gift from Knowledge Distillation:
     Fast Optimization, Network Minimization and Transfer Learning  
 (NST) - Like what you like: knowledge distill via neuron selectivity transfer 
-(CRD) - Contrastive Representation Distillation
+(CRD) - Contrastive Representation Distillation  
 
 ## Installation
 
