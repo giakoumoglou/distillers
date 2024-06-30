@@ -1,14 +1,18 @@
-# RepDistiller
+## RepDistiller
+
+This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
+```
+@Article{giakoumoglou2024xxx,
+  author  = {Giakoumoglou Nikolaos and Stathaki Tania},
+  title   = {XXX},
+  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  year    = {2024},
+}
+```
+This repo is based on [RepDistiller implementation](https://github.com/HobbitLong/RepDistiller): [Paper](http://arxiv.org/abs/1910.10699)
 
 
-
-**(1) This repo is based on [RepDistiller implementation](https://github.com/HobbitLong/RepDistiller): [Paper](http://arxiv.org/abs/1910.10699)**
-
-**(2) This repo covers the implementation of the following 2024 XXX paper:**
-
-"XXX" (XXX). [Paper](http://arxiv.org/abs/XXXX.XXXXX)
-
-**(3) Benchmarks 12 state-of-the-art knowledge distillation methods in PyTorch, including:**
+### Benchmarks 12 state-of-the-art knowledge distillation methods in PyTorch
 
 (KD) - Distilling the Knowledge in a Neural Network  
 (FitNet) - Fitnets: hints for thin deep nets  
@@ -26,11 +30,11 @@
 (NST) - Like what you like: knowledge distill via neuron selectivity transfer  
 (CRD) - Contrastive Representation Distillation  
 
-## Installation
+### Installation
 
 This repo was tested with Ubuntu 16.04.5 LTS, Python 3.5, PyTorch 0.4.0, and CUDA 9.0. But it should be runnable with recent PyTorch versions >=0.4.0
 
-## Running
+### Running
 
 1. Fetch the pretrained teacher models by:
 
@@ -67,7 +71,7 @@ This repo was tested with Ubuntu 16.04.5 LTS, Python 3.5, PyTorch 0.4.0, and CUD
 
 Note: the default setting is for a single-GPU training. If you would like to play this repo with multiple GPUs, you might need to tune the learning rate, which empirically needs to be scaled up linearly with the batch size, see [this paper](https://arxiv.org/abs/1706.02677)
 
-## Benchmark Results on CIFAR-100:
+### Benchmark Results on CIFAR-100:
 
 Performance is measured by classification accuracy (%)
 
@@ -108,15 +112,6 @@ Performance is measured by classification accuracy (%)
 | NST | 58.16 | 64.96 | 71.28 | 74.12 | 74.68 | 74.89 |
 | CRD | 69.73 | 69.11 | 74.30 | 75.11 | 75.65 | 76.05 |
 
-## Citation
+### License
 
-If you find this repo useful for your research, please consider citing the paper
-
-```
-@inproceedings{giakoumoglou2024xxx,
-  title={XXX},
-  author={Giakoumoglou Nikolaos and Stathaki Tania},
-  booktitle={XXX},
-  year={2024}
-}
-```
+This project is under the CC-BY-NC 4.0 license. See [LICENSE](LICENSE) for details.
