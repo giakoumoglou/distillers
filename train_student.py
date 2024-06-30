@@ -23,11 +23,6 @@ from dataset.cifar100 import get_cifar100_dataloaders, get_cifar100_dataloaders_
 from distillers import DistillKL, HintLoss, Attention, Similarity, Correlation, VIDLoss, RKDLoss, PKT, ABLoss, FactorTransfer, KDSVD, FSP, NSTLoss, CRDLoss
 from distillers import RSKDLoss, LFCKDLoss, ARDLoss, MultiStageAttention
 
-import warnings
-warnings.filterwarnings('ignore')
-os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def parse_option():
 
@@ -85,7 +80,7 @@ def parse_option():
     parser.add_argument('--hint_layer', default=2, type=int, choices=[0, 1, 2, 3, 4])
 
     opt = parser.parse_args()
-
+    
     # set different learning rate from these 4 models
     if opt.model_s in ['MobileNetV2', 'ShuffleV1', 'ShuffleV2']:
         opt.learning_rate = 0.01
@@ -112,10 +107,13 @@ def parse_option():
     if not os.path.isdir(opt.save_folder):
         os.makedirs(opt.save_folder)
         
-    print("**************************************************************************************")
-    print("********** TEACHER: {} --> STUDENT: {} USING {} **********".format(opt.model_t.upper(), opt.model_s.upper(), opt.distill.upper()))
-    print("**************************************************************************************")
-
+    # nice print
+    message = "TEACHER: {} --> STUDENT: {} USING {}".format(opt.model_t.upper(), opt.model_s.upper(), opt.distill.upper())
+    message = "*" *10 + " " + message + " " + "*" * 10
+    print("*" * len(message))
+    print(message)
+    print("*" * len(message))
+    
     return opt
 
 
@@ -591,6 +589,9 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
             raise NotImplementedError(opt.distill)
 
         loss = opt.gamma * loss_cls + opt.alpha * loss_div + opt.beta * loss_kd
+        print('--> CLS loss: ', loss_cls)
+        print('--> KL-div loss: ', loss_div)
+        print('--> KD (mine) loss: ', loss_kd)
 
         acc1, acc5 = accuracy(logit_s, target, topk=(1, 5))
         losses.update(loss.item(), input.size(0))
@@ -666,8 +667,7 @@ def validate(val_loader, model, criterion, opt):
                        idx, len(val_loader), batch_time=batch_time, loss=losses,
                        top1=top1, top5=top5))
 
-        print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
-              .format(top1=top1, top5=top5))
+        print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'.format(top1=top1, top5=top5))
 
     return top1.avg, top5.avg, losses.avg
 
