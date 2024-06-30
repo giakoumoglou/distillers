@@ -12,7 +12,7 @@ This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.X
 This repo is based on [RepDistiller implementation](https://github.com/HobbitLong/RepDistiller): [Paper](http://arxiv.org/abs/1910.10699)
 
 
-### Benchmarks 12 state-of-the-art knowledge distillation methods in PyTorch
+### Benchmarks 13 state-of-the-art knowledge distillation methods in PyTorch
 
 (KD) - Distilling the Knowledge in a Neural Network  
 (FitNet) - Fitnets: hints for thin deep nets  
