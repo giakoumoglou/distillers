@@ -23,7 +23,7 @@
 (FT) - Paraphrasing Complex Network: Network Compression via Factor Transfer  
 (FSP) - A Gift from Knowledge Distillation:
     Fast Optimization, Network Minimization and Transfer Learning  
-(NST) - Like what you like: knowledge distill via neuron selectivity transfer 
+(NST) - Like what you like: knowledge distill via neuron selectivity transfer  
 (CRD) - Contrastive Representation Distillation  
 
 ## Installation
