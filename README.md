@@ -2,7 +2,7 @@
 
 
 
-**(1) This repo is based on [RepDistiller implementation](https://github.com/HobbitLong/RepDistiller): [Paper](http://arxiv.org/abs/1910.10699) **
+**(1) This repo is based on [RepDistiller implementation](https://github.com/HobbitLong/RepDistiller): [Paper](http://arxiv.org/abs/1910.10699)**
 
 **(2) This repo covers the implementation of the following 2024 XXX paper:**
 
