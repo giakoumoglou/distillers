@@ -2,17 +2,17 @@
 
 This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.XXXXX) and [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
 ```
-@Article{giakoumoglou2024xxx,
+@Article{giakoumoglou2024invariant,
   author  = {Giakoumoglou Nikolaos and Stathaki Tania},
-  title   = {XXX},
+  title   = {Invariant Consistency for Knowledge Distillation},
   journal = {arXiv preprint arXiv:XXXX.XXXXX},
   year    = {2024},
 }
 ```
 ```
-@Article{giakoumoglou2024xxx,
+@Article{giakoumoglou2024relational,
   author  = {Giakoumoglou Nikolaos and Stathaki Tania},
-  title   = {XXX},
+  title   = {Relational Consistency for Knowledge Distillation},
   journal = {arXiv preprint arXiv:XXXX.XXXXX},
   year    = {2024},
 }
