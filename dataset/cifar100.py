@@ -1,39 +1,8 @@
 from __future__ import print_function
-
-import os
-import socket
 import numpy as np
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from PIL import Image
-
-"""
-mean = {
-    'cifar100': (0.5071, 0.4867, 0.4408),
-}
-
-std = {
-    'cifar100': (0.2675, 0.2565, 0.2761),
-}
-"""
-
-
-def get_data_folder():
-    """
-    Return server-dependent path to store the data
-    """
-    hostname = socket.gethostname()
-    if hostname.startswith('visiongpu'):
-        data_folder = '/data/vision/phillipi/rep-learn/datasets'
-    elif hostname.startswith('yonglong-home'):
-        data_folder = '/home/yonglong/Data/data'
-    else:
-        data_folder = './data/'
-
-    if not os.path.isdir(data_folder):
-        os.makedirs(data_folder)
-
-    return data_folder
 
 
 class CIFAR100Instance(datasets.CIFAR100):
@@ -48,7 +17,7 @@ def get_cifar100_dataloaders(batch_size=128, num_workers=8, is_instance=False):
     """
     CIFAR-100
     """
-    data_folder = get_data_folder()
+    data_folder = './data/'
 
     train_transform = transforms.Compose([
         transforms.RandomCrop(32, padding=4),

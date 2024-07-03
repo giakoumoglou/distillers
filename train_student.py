@@ -7,7 +7,6 @@
 from __future__ import print_function
 import os
 import argparse
-import socket
 import sys
 import time
 import numpy as np
@@ -18,15 +17,13 @@ import torch.backends.cudnn as cudnn
 from torch.utils.tensorboard import SummaryWriter
 
 from models import model_dict
-from models.util import Embed, ConvReg, LinearEmbed, Connector, Translator, Paraphraser
+from models.util import ConvReg, LinearEmbed, Connector, Translator, Paraphraser
 from dataset.cifar100 import get_cifar100_dataloaders, get_cifar100_dataloaders_sample
 from distillers import DistillKL, HintLoss, Attention, Similarity, Correlation, VIDLoss, RKDLoss, PKT, ABLoss, FactorTransfer, KDSVD, FSP, NSTLoss, CRDLoss
-from distillers import RSKDLoss, LFCKDLoss, ARDLoss, MultiStageAttention
+from distillers import ICDLoss, RCDLoss, ContrastLoss
 
 
 def parse_option():
-
-    hostname = socket.gethostname()
 
     parser = argparse.ArgumentParser('argument for training')
 
@@ -49,11 +46,18 @@ def parse_option():
     parser.add_argument('--dataset', type=str, default='cifar100', choices=['cifar100'], help='dataset')
 
     # model
-    parser.add_argument('--model_s', type=str, default='resnet8', choices=['resnet8', 'resnet14', 'resnet20', 'resnet32', 'resnet44', 'resnet56', 'resnet110', 'resnet8x4', 'resnet32x4', 'wrn_16_1', 'wrn_16_2', 'wrn_40_1', 'wrn_40_2', 'vgg8', 'vgg11', 'vgg13', 'vgg16', 'vgg19', 'ResNet50', 'MobileNetV2', 'ShuffleV1', 'ShuffleV2'])
+    parser.add_argument('--model_s', type=str, default='resnet8', choices=['resnet8', 'resnet14', 'resnet20', 'resnet32', 
+                                                                           'resnet44', 'resnet56', 'resnet110', 'resnet8x4', 
+                                                                           'resnet32x4', 'wrn_16_1', 'wrn_16_2', 'wrn_40_1', 
+                                                                           'wrn_40_2', 'vgg8', 'vgg11', 'vgg13', 'vgg16', 
+                                                                           'vgg19', 'ResNet50', 'MobileNetV2', 'ShuffleV1', 'ShuffleV2'])
     parser.add_argument('--path_t', type=str, default=None, help='teacher model snapshot')
 
     # distillation
-    parser.add_argument('--distill', type=str, default='kd', choices=['kd', 'hint', 'attention', 'similarity', 'correlation', 'vid', 'crd', 'kdsvd', 'fsp','rkd', 'pkt', 'abound', 'factor', 'nst', 'rskd', 'lfckd', 'ard', 'msa'])
+    parser.add_argument('--distill', type=str, default='kd', choices=['kd', 'hint', 'attention', 'similarity', 
+                                                                      'correlation', 'vid', 'crd', 'kdsvd', 
+                                                                      'fsp','rkd', 'pkt', 'abound', 'factor', 
+                                                                      'nst', 'icd', 'rcd', 'contrast', 'contrast_all',])
     parser.add_argument('--trial', type=str, default='1', help='trial id')
     parser.add_argument('-r', '--gamma', type=float, default=1, help='weight for classification')
     parser.add_argument('-a', '--alpha', type=float, default=None, help='weight balance for KD')
@@ -63,18 +67,13 @@ def parse_option():
     parser.add_argument('--kd_T', type=float, default=4, help='temperature for KD distillation')
 
     # NCE distillation
-    #parser.add_argument('--feat_dim', default=128, type=int, help='feature dimension')
-    #parser.add_argument('--mode', default='exact', type=str, choices=['exact', 'relax'])
-    #parser.add_argument('--nce_k', default=16384, type=int, help='number of negative samples for NCE')
-    #parser.add_argument('--nce_t', default=0.07, type=float, help='temperature parameter for softmax')
-    #parser.add_argument('--nce_m', default=0.5, type=float, help='momentum for non-parametric updates')
-    
-    # NIKOLAOS GIAKOUMOGLOU params
     parser.add_argument('--feat_dim', default=128, type=int, help='feature dimension')
     parser.add_argument('--nce_k', default=16384, type=int, help='number of negative samples for NCE')
-    parser.add_argument('--nce_t_s', default=0.04, type=float, help='temperature parameter for softmax') # RSKD
-    parser.add_argument('--nce_t_t', default=0.10, type=float, help='temperature parameter for softmax') # RSKD
-    parser.add_argument('--nce_t', default=0.07, type=float, help='temperature parameter for softmax') # LFCKD
+    parser.add_argument('--nce_t_s', default=0.04, type=float, help='temperature parameter for softmax')
+    parser.add_argument('--nce_t_t', default=0.10, type=float, help='temperature parameter for softmax') 
+    parser.add_argument('--nce_t', default=0.07, type=float, help='temperature parameter for softmax') 
+    parser.add_argument('--nce_m', default=0.5, type=float, help='momentum for non-parametric updates')
+    parser.add_argument('--mode', default='exact', type=str, choices=['exact', 'relax'])
 
     # Hint layer
     parser.add_argument('--hint_layer', default=2, type=int, choices=[0, 1, 2, 3, 4])
@@ -96,8 +95,15 @@ def parse_option():
 
     opt.model_t = get_teacher_name(opt.path_t)
 
-    opt.model_name = 'S_{}_T_{}_{}_{}_r_{}_a_{}_b_{}_{}'.format(opt.model_s, opt.model_t, opt.dataset, opt.distill,
-                                                                opt.gamma, opt.alpha, opt.beta, opt.trial)
+    opt.model_name = '{}_S_{}_T_{}_{}_r_{}_a_{}_b_{}_trial_{}'.format(opt.distill.upper(), 
+                                                                      opt.model_s, 
+                                                                      opt.model_t,
+                                                                      opt.dataset,
+                                                                      opt.gamma, 
+                                                                      opt.alpha, 
+                                                                      opt.beta, 
+                                                                      opt.trial,
+                                                                      )
 
     opt.tb_folder = os.path.join(opt.tb_path, opt.model_name)
     if not os.path.isdir(opt.tb_folder):
@@ -108,7 +114,10 @@ def parse_option():
         os.makedirs(opt.save_folder)
         
     # nice print
-    message = "TEACHER: {} --> STUDENT: {} USING {}".format(opt.model_t.upper(), opt.model_s.upper(), opt.distill.upper())
+    message = "TEACHER: {} --> STUDENT: {} USING {}".format(opt.model_t.upper(), 
+                                                            opt.model_s.upper(), 
+                                                            opt.distill.upper(),
+                                                            )
     message = "*" *10 + " " + message + " " + "*" * 10
     print("*" * len(message))
     print(message)
@@ -134,7 +143,7 @@ def load_teacher(model_path, n_cls):
         model.load_state_dict(torch.load(model_path)['model'])
     except:
         model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu'))['model'])
-    print('Teacher model loader')
+    print('Teacher model loaded')
     return model
 
 
@@ -213,31 +222,26 @@ def main():
         s_n = [f.shape[1] for f in feat_s[1:-1]]
         t_n = [f.shape[1] for f in feat_t[1:-1]]
         criterion_kd = nn.ModuleList([VIDLoss(s, t, t) for s, t in zip(s_n, t_n)])
-        # add this as some parameters in VIDLoss need to be updated
         trainable_list.append(criterion_kd)
     elif opt.distill == 'abound':
         s_shapes = [f.shape for f in feat_s[1:-1]]
         t_shapes = [f.shape for f in feat_t[1:-1]]
         connector = Connector(s_shapes, t_shapes)
-        # init stage training
         init_trainable_list = nn.ModuleList([])
         init_trainable_list.append(connector)
         init_trainable_list.append(model_s.get_feat_modules())
         criterion_kd = ABLoss(len(feat_s[1:-1]))
         init(model_s, model_t, init_trainable_list, criterion_kd, train_loader, logger, opt)
-        # classification
         module_list.append(connector)
     elif opt.distill == 'factor':
         s_shape = feat_s[-2].shape
         t_shape = feat_t[-2].shape
         paraphraser = Paraphraser(t_shape)
         translator = Translator(s_shape, t_shape)
-        # init stage training
         init_trainable_list = nn.ModuleList([])
         init_trainable_list.append(paraphraser)
         criterion_init = nn.MSELoss()
         init(model_s, model_t, init_trainable_list, criterion_init, train_loader, logger, opt)
-        # classification
         criterion_kd = FactorTransfer()
         module_list.append(translator)
         module_list.append(paraphraser)
@@ -246,46 +250,36 @@ def main():
         s_shapes = [s.shape for s in feat_s[:-1]]
         t_shapes = [t.shape for t in feat_t[:-1]]
         criterion_kd = FSP(s_shapes, t_shapes)
-        # init stage training
         init_trainable_list = nn.ModuleList([])
         init_trainable_list.append(model_s.get_feat_modules())
         init(model_s, model_t, init_trainable_list, criterion_kd, train_loader, logger, opt)
-        # classification training
         pass
-    elif opt.distill == 'rskd':
+    elif opt.distill == 'rcd':
         opt.s_dim = feat_s[-1].shape[1]
         opt.t_dim = feat_t[-1].shape[1]
-        criterion_kd = RSKDLoss(opt)
+        criterion_kd = RCDLoss(opt)
         module_list.append(criterion_kd.embed_s)
         module_list.append(criterion_kd.embed_t)
         trainable_list.append(criterion_kd.embed_s)
         trainable_list.append(criterion_kd.embed_t)
-    elif opt.distill == 'lfckd':
+    elif opt.distill == 'contrast' or opt.distill == 'contrast_all':
         opt.s_dim = feat_s[-1].shape[1]
         opt.t_dim = feat_t[-1].shape[1]
-        criterion_kd = LFCKDLoss(opt)
+        criterion_kd = ContrastLoss(opt)
         module_list.append(criterion_kd.embed_s)
         module_list.append(criterion_kd.embed_t)
         trainable_list.append(criterion_kd.embed_s)
         trainable_list.append(criterion_kd.embed_t)
-    elif opt.distill == 'ard':
+    elif opt.distill == 'icd':
         opt.s_dim = feat_s[-1].shape[1]
         opt.t_dim = feat_t[-1].shape[1]
-        criterion_kd = ARDLoss(opt)
+        criterion_kd = ICDLoss(opt)
         module_list.append(criterion_kd.embed_s)
         module_list.append(criterion_kd.embed_t)
         module_list.append(criterion_kd.params)
         trainable_list.append(criterion_kd.embed_s)
         trainable_list.append(criterion_kd.embed_t)
         trainable_list.append(criterion_kd.params)
-    elif opt.distill == 'msa':
-        s_shapes = [t.size(1) for t in feat_s]
-        t_shapes = [t.size(1) for t in feat_t]
-        criterion_kd = MultiStageAttention(s_shapes=s_shapes, t_shapes=t_shapes)
-        module_list.append(criterion_kd.s_attention)
-        module_list.append(criterion_kd.t_attention)
-        trainable_list.append(criterion_kd.s_attention)
-        trainable_list.append(criterion_kd.t_attention)
     else:
         raise NotImplementedError(opt.distill)
 
@@ -369,6 +363,17 @@ def main():
     torch.save(state, save_file)
     logger.close()
 
+    # write results directly to .txt for ease of copying
+    if True:
+        save_path = './save/'
+        filename = os.path.join(save_path, '{}.txt'.format(opt.distill))
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+        with open(filename, 'a') as file:
+            line = "{} --> {} --> best_acc: {:.2f}\n".format(opt.model_t, opt.model_s, best_acc)
+            file.write(line)
+
+
 
 def init(model_s, model_t, init_modules, criterion, train_loader, logger, opt):
     model_t.eval()
@@ -387,6 +392,7 @@ def init(model_s, model_t, init_modules, criterion, train_loader, logger, opt):
         lr = 0.01
     else:
         lr = opt.learning_rate
+        
     optimizer = optim.SGD(init_modules.parameters(),
                           lr=lr,
                           momentum=opt.momentum,
@@ -569,27 +575,27 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
             factor_s = module_list[1](feat_s[-2])
             factor_t = module_list[2](feat_t[-2], is_factor=True)
             loss_kd = criterion_kd(factor_s, factor_t)
-        elif opt.distill == 'rskd':
+        elif opt.distill == 'rcd':
             f_s = feat_s[-1]
             f_t = feat_t[-1]
             loss_kd = criterion_kd(f_s, f_t)
-        elif opt.distill == 'lfckd':
+        elif opt.distill == 'contrast':
             f_s = feat_s[-1]
             f_t = feat_t[-1]
-            loss_kd = criterion_kd(f_s, f_t, target)
-        elif opt.distill == 'ard':
+            loss_kd = criterion_kd(f_s, f_t, target, use_valid_negatives=True)
+        elif opt.distill == 'contrast_all':
             f_s = feat_s[-1]
             f_t = feat_t[-1]
-            loss_kd = criterion_kd(f_s, f_t)
-        elif opt.distill == 'msa': 
-            f_s = feat_s
-            f_t = feat_t
+            loss_kd = criterion_kd(f_s, f_t, target, use_valid_negatives=False)
+        elif opt.distill == 'icd':
+            f_s = feat_s[-1]
+            f_t = feat_t[-1]
             loss_kd = criterion_kd(f_s, f_t)
         else:
             raise NotImplementedError(opt.distill)
 
         loss = opt.gamma * loss_cls + opt.alpha * loss_div + opt.beta * loss_kd
-        
+
         acc1, acc5 = accuracy(logit_s, target, topk=(1, 5))
         losses.update(loss.item(), input.size(0))
         top1.update(acc1[0], input.size(0))

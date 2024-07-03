@@ -7,7 +7,6 @@
 from __future__ import print_function
 import os
 import argparse
-import socket
 import sys
 import time
 import numpy as np
@@ -22,8 +21,6 @@ from dataset.cifar100 import get_cifar100_dataloaders
 
 
 def parse_option():
-
-    hostname = socket.gethostname()
 
     parser = argparse.ArgumentParser('argument for training')
 
@@ -42,11 +39,11 @@ def parse_option():
     parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
 
     # dataset
-    parser.add_argument('--model', type=str, default='resnet110',
-                        choices=['resnet8', 'resnet14', 'resnet20', 'resnet32', 'resnet44', 'resnet56', 'resnet110',
-                                 'resnet8x4', 'resnet32x4', 'wrn_16_1', 'wrn_16_2', 'wrn_40_1', 'wrn_40_2',
-                                 'vgg8', 'vgg11', 'vgg13', 'vgg16', 'vgg19',
-                                 'MobileNetV2', 'ShuffleV1', 'ShuffleV2', ])
+    parser.add_argument('--model', type=str, default='resnet8', choices=['resnet8', 'resnet14', 'resnet20', 'resnet32', 
+                                                                         'resnet44', 'resnet56', 'resnet110', 'resnet8x4', 
+                                                                         'resnet32x4', 'wrn_16_1', 'wrn_16_2', 'wrn_40_1', 
+                                                                         'wrn_40_2', 'vgg8', 'vgg11', 'vgg13', 'vgg16', 
+                                                                         'vgg19', 'ResNet50', 'MobileNetV2', 'ShuffleV1', 'ShuffleV2'])
     parser.add_argument('--dataset', type=str, default='cifar100', choices=['cifar100'], help='dataset')
 
     parser.add_argument('-t', '--trial', type=int, default=0, help='the experiment id')
@@ -66,8 +63,12 @@ def parse_option():
     for it in iterations:
         opt.lr_decay_epochs.append(int(it))
 
-    opt.model_name = '{}_{}_lr_{}_decay_{}_trial_{}'.format(opt.model, opt.dataset, opt.learning_rate,
-                                                            opt.weight_decay, opt.trial)
+    opt.model_name = '{}_{}_lr_{}_decay_{}_trial_{}'.format(opt.model, 
+                                                            opt.dataset, 
+                                                            opt.learning_rate,
+                                                            opt.weight_decay, 
+                                                            opt.trial,
+                                                            )
 
     opt.tb_folder = os.path.join(opt.tb_path, opt.model_name)
     if not os.path.isdir(opt.tb_folder):
@@ -99,7 +100,8 @@ def main():
     optimizer = optim.SGD(model.parameters(),
                           lr=opt.learning_rate,
                           momentum=opt.momentum,
-                          weight_decay=opt.weight_decay)
+                          weight_decay=opt.weight_decay,
+                          )
 
     criterion = nn.CrossEntropyLoss()
 
@@ -324,6 +326,7 @@ def adjust_learning_rate(epoch, opt, optimizer):
         new_lr = opt.learning_rate * (opt.lr_decay_rate ** steps)
         for param_group in optimizer.param_groups:
             param_group['lr'] = new_lr
+
 
 if __name__ == '__main__':
     main()
