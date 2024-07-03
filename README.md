@@ -1,6 +1,7 @@
 ## Distillers
 
-This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.XXXXX) and [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
+This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
+
 ```
 @Article{giakoumoglou2024invariant,
   author  = {Giakoumoglou Nikolaos and Stathaki Tania},
@@ -9,6 +10,9 @@ This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.X
   year    = {2024},
 }
 ```
+
+It also includes the implementation of and [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
+
 ```
 @Article{giakoumoglou2024relational,
   author  = {Giakoumoglou Nikolaos and Stathaki Tania},
