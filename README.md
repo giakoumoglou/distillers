@@ -1,6 +1,6 @@
-## RepDistiller
+## Distillers
 
-This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
+This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.XXXXX) and [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
 ```
 @Article{giakoumoglou2024xxx,
   author  = {Giakoumoglou Nikolaos and Stathaki Tania},
@@ -9,6 +9,15 @@ This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.X
   year    = {2024},
 }
 ```
+```
+@Article{giakoumoglou2024xxx,
+  author  = {Giakoumoglou Nikolaos and Stathaki Tania},
+  title   = {XXX},
+  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  year    = {2024},
+}
+```
+
 This repo is based on [RepDistiller implementation](https://github.com/HobbitLong/RepDistiller): [Paper](http://arxiv.org/abs/1910.10699)
 
 
