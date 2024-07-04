@@ -12,3 +12,7 @@ from .RKD import RKDLoss
 from .SP import Similarity
 from .VID import VIDLoss
 from .CRD import CRDLoss
+
+from .ICD import ICDLoss
+from .RCD import RCDLoss
+from .Contrast import ContrastLoss
