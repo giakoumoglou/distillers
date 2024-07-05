@@ -606,6 +606,10 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
         loss.backward()
         optimizer.step()
 
+        # clear CUDA
+        del input, target, index, feat_s, logit_s, feat_t, logit_t
+        torch.cuda.empty_cache()
+
         # ===================meters=====================
         batch_time.update(time.time() - end)
         end = time.time()
@@ -656,6 +660,10 @@ def validate(val_loader, model, criterion, opt):
             losses.update(loss.item(), input.size(0))
             top1.update(acc1[0], input.size(0))
             top5.update(acc5[0], input.size(0))
+
+            # clear CUDA
+            del input, target, output
+            torch.cuda.empty_cache()
 
             # measure elapsed time
             batch_time.update(time.time() - end)
