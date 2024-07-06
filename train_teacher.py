@@ -111,7 +111,7 @@ def main():
         cudnn.benchmark = True
 
     # tensorboard
-    logger = SummaryWriter(logdir=opt.tb_folder)
+    logger = SummaryWriter(opt.tb_folder)
 
     # routine
     for epoch in range(1, opt.epochs + 1):
