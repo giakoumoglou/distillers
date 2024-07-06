@@ -19,9 +19,14 @@ from torch.utils.tensorboard import SummaryWriter
 from models import model_dict
 from models.util import ConvReg, LinearEmbed, Connector, Translator, Paraphraser
 from dataset.cifar100 import get_cifar100_dataloaders, get_cifar100_dataloaders_sample
-from distillers import DistillKL, HintLoss, Attention, Similarity, Correlation, VIDLoss, RKDLoss, PKT, ABLoss, FactorTransfer, KDSVD, FSP, NSTLoss, CRDLoss
+from distillers import DistillKL, HintLoss, Attention, Similarity, Correlation, VIDLoss, RKDLoss, PKT, ABLoss, FactorTransfer, KDSVD, FSP, NSTLoss, CRDLoss, RCDv2Loss
 from distillers import ICDLoss, RCDLoss, ContrastLoss
 
+import warnings
+warnings.filterwarnings('ignore')
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def parse_option():
 
@@ -57,7 +62,7 @@ def parse_option():
     parser.add_argument('--distill', type=str, default='kd', choices=['kd', 'hint', 'attention', 'similarity', 
                                                                       'correlation', 'vid', 'crd', 'kdsvd', 
                                                                       'fsp','rkd', 'pkt', 'abound', 'factor', 
-                                                                      'nst', 'icd', 'rcd', 'contrast', 'contrast_all',])
+                                                                      'nst', 'icd', 'rcd', 'contrast', 'contrast_all', 'rcdv2'])
     parser.add_argument('--trial', type=str, default='1', help='trial id')
     parser.add_argument('-r', '--gamma', type=float, default=1, help='weight for classification')
     parser.add_argument('-a', '--alpha', type=float, default=None, help='weight balance for KD')
@@ -75,7 +80,7 @@ def parse_option():
     parser.add_argument('--nce_m', default=0.5, type=float, help='momentum for non-parametric updates')
     parser.add_argument('--mode', default='exact', type=str, choices=['exact', 'relax'])
 
-    # Hint layer
+    # hint layer
     parser.add_argument('--hint_layer', default=2, type=int, choices=[0, 1, 2, 3, 4])
 
     opt = parser.parse_args()
@@ -122,7 +127,16 @@ def parse_option():
     print("*" * len(message))
     print(message)
     print("*" * len(message))
-    
+    print("CUDA available:", torch.cuda.is_available())
+    print("GPUs: ", torch.cuda.device_count())
+    print("torch version:", torch.__version__)
+    if torch.cuda.is_available():
+        gpu_info = torch.cuda.get_device_properties(0)
+        print(f"GPU Name: {gpu_info.name}")
+        print(f"Total VRAM: {gpu_info.total_memory / 1e9} GB")
+    options_dict = vars(opt)
+    for key, value in options_dict.items():
+        print(f"{key}: {value}")
     return opt
 
 
@@ -157,7 +171,7 @@ def main():
 
     # dataloader
     if opt.dataset == 'cifar100':
-        if opt.distill in ['crd']:
+        if opt.distill in ['crd', 'rcdv2']:
             train_loader, val_loader, n_data = get_cifar100_dataloaders_sample(batch_size=opt.batch_size, num_workers=opt.num_workers, k=opt.nce_k, mode=opt.mode)
         else:
             train_loader, val_loader, n_data = get_cifar100_dataloaders(batch_size=opt.batch_size, num_workers=opt.num_workers, is_instance=True)
@@ -194,6 +208,15 @@ def main():
         opt.t_dim = feat_t[-1].shape[1]
         opt.n_data = n_data
         criterion_kd = CRDLoss(opt)
+        module_list.append(criterion_kd.embed_s)
+        module_list.append(criterion_kd.embed_t)
+        trainable_list.append(criterion_kd.embed_s)
+        trainable_list.append(criterion_kd.embed_t)
+    elif opt.distill == 'rcdv2':
+        opt.s_dim = feat_s[-1].shape[1]
+        opt.t_dim = feat_t[-1].shape[1]
+        opt.n_data = n_data
+        criterion_kd = RCDv2Loss(opt)
         module_list.append(criterion_kd.embed_s)
         module_list.append(criterion_kd.embed_t)
         trainable_list.append(criterion_kd.embed_s)
@@ -374,7 +397,6 @@ def main():
             file.write(line)
 
 
-
 def init(model_s, model_t, init_modules, criterion, train_loader, logger, opt):
     model_t.eval()
     model_s.eval()
@@ -490,7 +512,7 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
 
     end = time.time()
     for idx, data in enumerate(train_loader):
-        if opt.distill in ['crd']:
+        if opt.distill in ['crd', 'rcdv2']:
             input, target, index, contrast_idx = data
         else:
             input, target, index = data
@@ -525,6 +547,10 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
             f_t = feat_t[opt.hint_layer]
             loss_kd = criterion_kd(f_s, f_t)
         elif opt.distill == 'crd':
+            f_s = feat_s[-1]
+            f_t = feat_t[-1]
+            loss_kd = criterion_kd(f_s, f_t, index, contrast_idx)
+        elif opt.distill == 'rcdv2':
             f_s = feat_s[-1]
             f_t = feat_t[-1]
             loss_kd = criterion_kd(f_s, f_t, index, contrast_idx)
@@ -606,10 +632,6 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
         loss.backward()
         optimizer.step()
 
-        # clear CUDA
-        del input, target, index, feat_s, logit_s, feat_t, logit_t
-        torch.cuda.empty_cache()
-
         # ===================meters=====================
         batch_time.update(time.time() - end)
         end = time.time()
@@ -661,14 +683,11 @@ def validate(val_loader, model, criterion, opt):
             top1.update(acc1[0], input.size(0))
             top5.update(acc5[0], input.size(0))
 
-            # clear CUDA
-            del input, target, output
-            torch.cuda.empty_cache()
-
             # measure elapsed time
             batch_time.update(time.time() - end)
             end = time.time()
 
+            # print info
             if idx % opt.print_freq == 0:
                 print('Test: [{0}/{1}]\t'
                       'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'

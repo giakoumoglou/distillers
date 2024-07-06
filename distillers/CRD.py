@@ -237,3 +237,44 @@ class AliasMethod(object):
         oj = alias.mul((1-b).long())
 
         return oq + oj
+    
+    
+if __name__ == "__main__":
+    f_s = [torch.randn(2, 32, 32, 32), torch.randn(2, 64, 32, 32), torch.randn(2, 128, 16, 16), torch.randn(2, 256, 8, 8), torch.randn(2, 256)]
+    f_t = [torch.randn(2, 32, 32, 32), torch.randn(2, 64, 64, 64), torch.randn(2, 256, 32, 32), torch.randn(2, 512, 16, 16), torch.randn(2, 512)]
+
+    # Select the last elements of f_s and f_t
+    f_s = f_s[-1]
+    f_t = f_t[-1]
+    
+
+    # Automatically determine channel shapes
+    s_dim = f_s.size(1)
+    t_dim = f_t.size(1)
+    feat_dim = 128  # Example feature dimension for projection space
+
+    # Options for CRDLoss
+    class Options:
+        def __init__(self, s_dim, t_dim, feat_dim, nce_k, nce_t, nce_m, n_data):
+            self.s_dim = s_dim
+            self.t_dim = t_dim
+            self.feat_dim = feat_dim
+            self.nce_k = nce_k
+            self.nce_t = nce_t
+            self.nce_m = nce_m
+            self.n_data = n_data
+
+    opt = Options(s_dim=s_dim, t_dim=t_dim, feat_dim=feat_dim, nce_k=4096, nce_t=0.07, nce_m=0.5, n_data=10000)
+
+    # Instantiate CRDLoss
+    crd_loss = CRDLoss(opt)
+
+    # Sample indices and contrast indices
+    batch_size = f_s.size(0)
+    idx = torch.randint(0, opt.n_data, (batch_size,))
+    contrast_idx = torch.randint(0, opt.n_data, (batch_size, opt.nce_k + 1))
+
+    # Compute the loss
+    loss = crd_loss(f_s, f_t, idx, contrast_idx)
+    
+    print("Computed CRD Loss:", loss.item())

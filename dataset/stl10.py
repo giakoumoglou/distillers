@@ -4,7 +4,9 @@ from torchvision import datasets, transforms
 
 
 class STL10Instance(datasets.STL10):
-    """STL10Instance Dataset for returning images along with their indices."""
+    """
+    STL10Instance Dataset for returning images along with their indices.
+    """
     def __getitem__(self, index):
         img, target = super().__getitem__(index)
         return img, target, index
@@ -14,7 +16,7 @@ def get_stl10_dataloaders(batch_size=64, num_workers=4, is_instance=False):
     """
     Dataloader for the STL-10 dataset.
     """
-    data_folder = './data'  # Adjust as necessary
+    data_folder = './data'  # adjust as necessary
 
     train_transform = transforms.Compose([
         transforms.Resize((32, 32)),  

@@ -7,7 +7,8 @@ from torchvision import transforms
 
 
 class ImageFolderInstance(datasets.ImageFolder):
-    """: Folder datasets which returns the index of the image as well::
+    """
+    Folder datasets which returns the index of the image as well::
     """
     def __getitem__(self, index):
         """
@@ -21,7 +22,8 @@ class ImageFolderInstance(datasets.ImageFolder):
 
 
 class ImageFolderSample(datasets.ImageFolder):
-    """: Folder datasets which returns (img, label, index, contrast_index):
+    """
+    Folder datasets which returns (img, label, index, contrast_index):
     """
     def __init__(self, root, transform=None, target_transform=None,
                  is_sample=False, k=4096):
@@ -84,7 +86,7 @@ def get_test_loader(dataset='imagenet', batch_size=128, num_workers=8):
     """get the test data loader"""
 
     if dataset == 'imagenet':
-        data_folder = get_data_folder()
+        data_folder = './data/imagenet/'
     else:
         raise NotImplementedError('dataset not supported: {}'.format(dataset))
 
@@ -109,10 +111,12 @@ def get_test_loader(dataset='imagenet', batch_size=128, num_workers=8):
 
 
 def get_dataloader_sample(dataset='imagenet', batch_size=128, num_workers=8, is_sample=False, k=4096):
-    """Data Loader for ImageNet"""
+    """
+    Data Loader for ImageNet
+    """
 
     if dataset == 'imagenet':
-        data_folder = get_data_folder()
+        data_folder = './data/imagenet/'
     else:
         raise NotImplementedError('dataset not supported: {}'.format(dataset))
 
@@ -159,7 +163,7 @@ def get_imagenet_dataloader(dataset='imagenet', batch_size=128, num_workers=16, 
     Data Loader for imagenet
     """
     if dataset == 'imagenet':
-        data_folder = get_data_folder()
+        data_folder = './data/imagenet/'
     else:
         raise NotImplementedError('dataset not supported: {}'.format(dataset))
 

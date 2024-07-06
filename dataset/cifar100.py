@@ -6,7 +6,8 @@ from PIL import Image
 
 
 class CIFAR100Instance(datasets.CIFAR100):
-    """CIFAR100Instance Dataset.
+    """
+    CIFAR100Instance Dataset.
     """
     def __getitem__(self, index):
         img, target = super().__getitem__(index)
@@ -108,34 +109,26 @@ class CIFAR100InstanceSample(datasets.CIFAR100):
         self.cls_negative = np.asarray(self.cls_negative)
 
     def __getitem__(self, index):
-        # if self.train:
-        #     img, target = self.train_data[index], self.train_labels[index]
-        # else:
-        #     img, target = self.test_data[index], self.test_labels[index]
-        img, target = self.data[index], self.labels[index]
-
-        # doing this so that it is consistent with all other datasets
-        # to return a PIL Image
-        img = Image.fromarray(img)
-
+        img, target = self.data[index], self.targets[index]  # Corrected from self.labels to self.targets
+    
+        img = Image.fromarray(img)  # Ensure PIL Image is used
+    
         if self.transform is not None:
             img = self.transform(img)
-
+    
         if self.target_transform is not None:
             target = self.target_transform(target)
-
+    
         if not self.is_sample:
-            # directly return
             return img, target, index
         else:
-            # sample contrastive examples
             if self.mode == 'exact':
                 pos_idx = index
             elif self.mode == 'relax':
-                pos_idx = np.random.choice(self.cls_positive[target], 1)
-                pos_idx = pos_idx[0]
+                pos_idx = np.random.choice(self.cls_positive[target], 1)[0]
             else:
                 raise NotImplementedError(self.mode)
+    
             replace = True if self.k > len(self.cls_negative[target]) else False
             neg_idx = np.random.choice(self.cls_negative[target], self.k, replace=replace)
             sample_idx = np.hstack((np.asarray([pos_idx]), neg_idx))
@@ -147,7 +140,7 @@ def get_cifar100_dataloaders_sample(batch_size=128, num_workers=1, k=4096, mode=
     """
     CIFAR-100
     """
-    data_folder = get_data_folder()
+    data_folder = './data/'
 
     train_transform = transforms.Compose([
         transforms.RandomCrop(32, padding=4),

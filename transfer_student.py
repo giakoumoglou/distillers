@@ -20,6 +20,11 @@ from models import model_dict
 from dataset.stl10 import get_stl10_dataloaders
 from dataset.tinyimagenet200 import get_tiny_imagenet_dataloaders
 
+import warnings
+warnings.filterwarnings('ignore')
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def parse_option():
 
@@ -27,10 +32,10 @@ def parse_option():
 
     parser.add_argument('--print_freq', type=int, default=100, help='print frequency')
     parser.add_argument('--tb_freq', type=int, default=500, help='tb frequency')
-    parser.add_argument('--save_freq', type=int, default=40, help='save frequency')
+    parser.add_argument('--save_freq', type=int, default=50, help='save frequency')
     parser.add_argument('--batch_size', type=int, default=64, help='batch_size')
     parser.add_argument('--num_workers', type=int, default=8, help='num of workers to use')
-    parser.add_argument('--epochs', type=int, default=240, help='number of training epochs')
+    parser.add_argument('--epochs', type=int, default=100, help='number of training epochs')
 
     # optimization
     parser.add_argument('--learning_rate', type=float, default=0.05, help='learning rate')
@@ -48,11 +53,11 @@ def parse_option():
 
     opt = parser.parse_args()
     
-    #opt.model_s = 'wrn_16_2'
-    #opt.path_s = './save/student_model/S_wrn_16_2_T_wrn_40_2_cifar100_ard_r_1_a_1.0_b_1.0_1/wrn_16_2_best.pth'
+    opt.model_s = 'wrn_16_2'
+    opt.path_s = './save//wrn_16_2_last.pth'
     
     # set different learning rate from these 4 models
-    if opt.model in ['MobileNetV2', 'ShuffleV1', 'ShuffleV2']:
+    if opt.model_s in ['MobileNetV2', 'ShuffleV1', 'ShuffleV2']:
         opt.learning_rate = 0.01
 
     # set the path according to the environment
@@ -64,7 +69,7 @@ def parse_option():
     for it in iterations:
         opt.lr_decay_epochs.append(int(it))
 
-    opt.model_name = '{}_{}_lr_{}_decay_{}_trial_{}'.format(opt.model, opt.dataset, opt.learning_rate,
+    opt.model_name = '{}_{}_lr_{}_decay_{}_trial_{}'.format(opt.model_s, opt.dataset, opt.learning_rate,
                                                             opt.weight_decay, opt.trial)
 
     opt.tb_folder = os.path.join(opt.tb_path, opt.model_name)
@@ -82,14 +87,13 @@ def load_student(model_path, n_cls, model_s):
     print('==> Loading student model')
     model = model_dict[model_s](num_classes=n_cls)
     try:
-        msg = model.load_state_dict(torch.load(model_path)['model'])
-        print(msg)
+        state_dict = torch.load(model_path)['model']
     except:
-        msg = model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu'))['model'])
-        print(msg)
+        state_dict = torch.load(model_path, map_location=torch.device('cpu'))['model']
+    msg = model.load_state_dict(state_dict, strict=False)
+    print(msg)
     print('Student model loaded')
     return model
-
 
 def main():
     best_acc = 0
@@ -100,29 +104,33 @@ def main():
     if opt.dataset == 'stl10':
         train_loader, val_loader = get_stl10_dataloaders(batch_size=opt.batch_size, num_workers=opt.num_workers)
         n_cls = 10
+        print(f"Length of STL10 training dataset: {len(train_loader.dataset)}")
+        print(f"Length of STL10 validation dataset: {len(val_loader.dataset)}")
     elif opt.dataset == 'tinyimagenet':
         train_loader, val_loader = get_tiny_imagenet_dataloaders(batch_size=opt.batch_size, num_workers=opt.num_workers)
         n_cls = 200
+        print(f"Length of Tiny ImageNet training dataset: {len(train_loader.dataset)}")
+        print(f"Length of Tiny ImageNet validation dataset: {len(val_loader.dataset)}")
     else:
         raise NotImplementedError(opt.dataset)
 
     # model
-    model = load_student(opt.path_s, n_cls, opt.model_s)
+    model = load_student(opt.path_s, 100, opt.model_s)
     model.fc = nn.Linear(model.fc.in_features, n_cls)
     model.fc.weight.data.normal_(mean=0.0, std=0.01)
     model.fc.bias.data.zero_()
     
     # freeze model
     for name, param in model.named_parameters():
-        if name in ['%fc.weight' 'fc.bias']:
+        if 'fc' in name:
             param.requires_grad = True
         else:
             param.requires_grad = False
-    print("Model modified and all layers except the last fc layer are frozen.")
+    print("Model modified and all layers except the last `fc` layer are frozen.")
 
 
     # optimizer
-    optimizer = optim.SGD(model.parameters(),
+    optimizer = optim.SGD([param for param in model.parameters() if param.requires_grad],
                           lr=opt.learning_rate,
                           momentum=opt.momentum,
                           weight_decay=opt.weight_decay)
@@ -135,7 +143,7 @@ def main():
         cudnn.benchmark = True
 
     # tensorboard
-    logger = SummaryWriter(logdir=opt.tb_folder)
+    logger = SummaryWriter(opt.tb_folder)
 
     # routine
     for epoch in range(1, opt.epochs + 1):
@@ -165,7 +173,7 @@ def main():
                 'best_acc': best_acc,
                 'optimizer': optimizer.state_dict(),
             }
-            save_file = os.path.join(opt.save_folder, '{}_best.pth'.format(opt.model))
+            save_file = os.path.join(opt.save_folder, '{}_best.pth'.format(opt.model_s))
             print('saving the best model!')
             torch.save(state, save_file)
 
@@ -190,7 +198,7 @@ def main():
         'model': model.state_dict(),
         'optimizer': optimizer.state_dict(),
     }
-    save_file = os.path.join(opt.save_folder, '{}_last.pth'.format(opt.model))
+    save_file = os.path.join(opt.save_folder, '{}_last.pth'.format(opt.model_s))
     torch.save(state, save_file)
     logger.close()
 

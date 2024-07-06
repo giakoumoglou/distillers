@@ -62,7 +62,7 @@ class RCDLoss(nn.Module):
         ptr = int(self.queue_ptr)
         effective_batch_size = min(batch_size, self.nce_k - ptr)
         self.queue[ptr: ptr + effective_batch_size] = keys[:effective_batch_size]
-        ptr = (ptr + effective_batch_size) % self.nce_k  # Move pointer
+        ptr = (ptr + effective_batch_size) % self.nce_k 
         self.queue_ptr[0] = ptr
 
         

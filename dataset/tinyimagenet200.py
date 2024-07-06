@@ -1,10 +1,15 @@
 from __future__ import print_function
-from torch.utils.data import DataLoader
+import os
+import pandas as pd
+from PIL import Image
+from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets, transforms
 
-
+    
 class TinyImageNetInstance(datasets.ImageFolder):
-    """TinyImageNet Dataset with instance indices."""
+    """
+    TinyImageNet Dataset with instance indices.
+    """
     def __getitem__(self, index):
         img, target = super().__getitem__(index)
         return img, target, index
@@ -55,3 +60,47 @@ def get_tiny_imagenet_dataloaders(batch_size=128, num_workers=8, is_instance=Fal
         return train_loader, test_loader, n_data
     else:
         return train_loader, test_loader
+
+
+class TinyImageNetDataset(Dataset):
+    """
+    TinyImageNet Dataset. not used since we change the structure to match ImageFolder.
+    """
+    def __init__(self, root_dir, transform=None, train=True):
+        self.root_dir = root_dir
+        self.transform = transform
+        self.train = train
+
+        if self.train:
+            self.data = []
+            self.labels = []
+            classes = os.listdir(os.path.join(root_dir, 'train'))
+            for label, cls in enumerate(classes):
+                cls_dir = os.path.join(root_dir, 'train', cls, 'images')
+                for img_name in os.listdir(cls_dir):
+                    self.data.append(os.path.join(cls_dir, img_name))
+                    self.labels.append(label)
+        else:
+            self.data = []
+            self.labels = []
+            val_dir = os.path.join(root_dir, 'val', 'images')
+            val_annotations = pd.read_csv(os.path.join(root_dir, 'val', 'val_annotations.txt'), 
+                                          sep='\t', header=None, 
+                                          names=['file_name', 'class', 'x1', 'y1', 'x2', 'y2'])
+            class_to_idx = {cls: idx for idx, cls in enumerate(sorted(os.listdir(os.path.join(root_dir, 'train'))))}
+            for _, row in val_annotations.iterrows():
+                self.data.append(os.path.join(val_dir, row['file_name']))
+                self.labels.append(class_to_idx[row['class']])
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, index):
+        img_path = self.data[index]
+        image = Image.open(img_path).convert('RGB')
+        label = self.labels[index]
+        
+        if self.transform:
+            image = self.transform(image)
+        
+        return image, label

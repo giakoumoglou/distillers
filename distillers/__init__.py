@@ -16,3 +16,4 @@ from .CRD import CRDLoss
 from .ICD import ICDLoss
 from .RCD import RCDLoss
 from .Contrast import ContrastLoss
+from .RCD_v2 import RCDv2Loss
