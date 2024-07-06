@@ -96,7 +96,7 @@ This repo was tested with Ubuntu 16.04.5 LTS, Python 3.5, PyTorch 0.4.0, and CUD
 4. Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
 
     ```
-    python transfer_student.py --path_s <path_to_student> --model_s <model_student> --dataset stl10 --trial 1     
+    python transfer_student.py --path_s <PATH_TO_WRN_16_2> --model_s wrn_16_2 --dataset stl10 --trial 1     
     ```
 
 5. (optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
