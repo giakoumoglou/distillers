@@ -1,4 +1,4 @@
-# fetch pre-trained teacher models
+# Fetch pre-trained teacher models
 
 mkdir -p save/models/
 
