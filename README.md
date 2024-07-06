@@ -113,7 +113,7 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 
     To download TinyImageNet-200, run the following script:
    ```
-   sh scripts/fetch_pretrained_teachers.sh
+   sh data/fetch_pretrained_teachers.sh
    ```
 
    The default directory to save datasets is `./data/`.
