@@ -46,13 +46,13 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 ### Installation
 
 1. Open your terminal and run the following command to clone the repository:
-   ```sh
+   ```
    git clone https://github.com/giakoumoglou/distillers.git
    ```
 
 2. Change into the directory of the cloned repository and nstall the necessary dependencies using `pip`:
 
-   ```sh
+   ```
    cd distillers
    pip install -r requirements.txt
    ```
@@ -111,7 +111,14 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
     python transfer_student.py --path_s <PATH_TO_WRN_16_2> --model_s wrn_16_2 --dataset stl10 --trial 1     
     ```
 
-5. (optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
+    To download TinyImageNet-200, run the following script:
+   ```
+   sh scripts/fetch_pretrained_teachers.sh
+   ```
+
+   The default directory to save datasets is `./data/`.
+
+6. (optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
 
 ### License
 
