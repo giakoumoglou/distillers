@@ -1,5 +1,5 @@
-# sample scripts for running the distillation code
-# use resnet32x4 and resnet8x4 as an example
+# Sample scripts for running the distillation code
+# Using resnet32x4 and resnet8x4 as an example
 
 # KD
 python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill kd --model_s resnet8x4 -r 0.1 -a 0.9 -b 0 --trial 1
