@@ -81,7 +81,7 @@ This repo was tested with Ubuntu 16.04.5 LTS, Python 3.5, PyTorch 0.4.0, and CUD
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill rcd --model_s resnet8x4 -a 0 -b 1 --trial 1
     ```
     
-4. Combining a distillation objective with KD is simply done by setting `-a` as a non-zero value, which results in the following example (combining ICD with KD)
+3. Combining a distillation objective with KD is simply done by setting `-a` as a non-zero value, which results in the following example (combining ICD with KD)
     ```
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill icd --model_s resnet8x4 -a 1 -b 1 --trial 1     
     ```
@@ -91,11 +91,11 @@ This repo was tested with Ubuntu 16.04.5 LTS, Python 3.5, PyTorch 0.4.0, and CUD
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill rcd --model_s resnet8x4 -a 1 -b 1 --trial 1     
     ```
    
-5. (optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
+4. (optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
 
 Note: the default setting is for a single-GPU training. If you would like to play this repo with multiple GPUs, you might need to tune the learning rate, which empirically needs to be scaled up linearly with the batch size, see [this paper](https://arxiv.org/abs/1706.02677)
 
-6. Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
+5. Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
 
     ```
     python transfer_student.py --path_s <path_to_student> --model_s <model_student> --dataset stl10 --trial 1     
