@@ -45,7 +45,19 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 
 ### Installation
 
-This repo was tested with Ubuntu 16.04.5 LTS, Python 3.5, PyTorch 0.4.0, and CUDA 9.0. But it should be runnable with recent PyTorch versions >=0.4.0
+1. Open your terminal and run the following command to clone the repository:
+   ```sh
+   git clone https://github.com/giakoumoglou/distillers.git
+   ```
+
+2. Change into the directory of the cloned repository and nstall the necessary dependencies using `pip`:
+
+   ```sh
+   cd distillers
+   pip install -r requirements.txt
+   ```
+
+3. This repo was tested with Ubuntu 16.04.5 LTS, Python 3.5, PyTorch 0.4.0, and CUDA 9.0. But it should be runnable with recent PyTorch versions >=0.4.0
 
 ### Running
 
