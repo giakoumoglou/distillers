@@ -26,19 +26,10 @@ class RCDv2Loss(nn.Module):
         f_s = self.embed_s(f_s)
         f_t = self.embed_t(f_t)
         
-        # Use the memory from ContrastMemory
-        queue = self.contrast.memory_v1.clone().detach()
+        l_s, l_t = self.contrast(f_s, f_t, idx, contrast_idx)
 
-        # Compute logits
-        l_s = torch.einsum("nc,kc->nk", [f_s, queue])
-        l_t = torch.einsum("nc,kc->nk", [f_t, queue])
-
-        # Compute the loss
         loss = -torch.sum(F.softmax(l_t.detach() / self.nce_t_t, dim=1) *
                           F.log_softmax(l_s / self.nce_t_s, dim=1), dim=1).mean()
-
-        # Enqueue the embeddings of the current batch
-        self.contrast.update_memory(f_s, idx)
 
         return loss
 
@@ -98,8 +89,8 @@ class ContrastMemory(nn.Module):
         T = self.params[1].item()
         Z_v1 = self.params[2].item()
         Z_v2 = self.params[3].item()
-
         momentum = self.params[4].item()
+        
         batchSize = v1.size(0)
         outputSize = self.memory_v1.size(0)
         inputSize = self.memory_v1.size(1)
@@ -199,8 +190,8 @@ if __name__ == "__main__":
     f_t = [torch.randn(64, 32, 32, 32), torch.randn(64, 64, 64, 64), torch.randn(64, 256, 32, 32), torch.randn(64, 512, 16, 16), torch.randn(64, 512)]
 
     # Select the last elements of f_s and f_t
-    f_s = f_s[-1]
-    f_t = f_t[-1]
+    f_s = f_s[-1].cuda()
+    f_t = f_t[-1].cuda()
 
     # Automatically determine channel shapes
     s_dim = f_s.size(1)
@@ -216,11 +207,11 @@ if __name__ == "__main__":
     opt = Options(s_dim=s_dim, t_dim=t_dim, feat_dim=feat_dim, n_data=n_data, nce_k=nce_k, nce_t=nce_t, nce_m=nce_m, nce_t_s=nce_t_s, nce_t_t=nce_t_t)
 
     # Instantiate CRDLoss
-    crd_loss = CRDLoss(opt)
+    crd_loss = RCDv2Loss(opt).cuda()
 
     # Sample indices
     batch_size = f_s.size(0)
-    idx = torch.randint(0, opt.n_data, (batch_size,))
+    idx = torch.randint(0, opt.n_data, (batch_size,)).cuda()
 
     # Compute the loss
     loss = crd_loss(f_s, f_t, idx)
