@@ -41,8 +41,8 @@ class RCDLoss(nn.Module):
         f_s = self.embed_s(f_s)
         f_t = self.embed_t(f_t)
         
-        f_s = F.normalize(f_s, dim=1)  
-        f_t = F.normalize(f_t, dim=1)  
+        #f_s = F.normalize(f_s, dim=1)  
+        #f_t = F.normalize(f_t, dim=1)  
 
         l_s = torch.einsum("nc,kc->nk", [f_s, self.queue.clone().detach()])
         l_t = torch.einsum("nc,kc->nk", [f_t, self.queue.clone().detach()])
