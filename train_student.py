@@ -216,7 +216,7 @@ def main():
         opt.s_dim = feat_s[-1].shape[1]
         opt.t_dim = feat_t[-1].shape[1]
         opt.n_data = n_data
-        criterion_kd = RCDv2Loss(opt)
+        criterion_kd = RCDv2Loss(opt).cuda()
         module_list.append(criterion_kd.embed_s)
         module_list.append(criterion_kd.embed_t)
         trainable_list.append(criterion_kd.embed_s)
@@ -523,7 +523,7 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
             input = input.cuda()
             target = target.cuda()
             index = index.cuda()
-            if opt.distill in ['crd']:
+            if opt.distill in ['crd', 'rcdv2']:
                 contrast_idx = contrast_idx.cuda()
 
         # ===================forward=====================
