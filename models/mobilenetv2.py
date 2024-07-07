@@ -114,7 +114,6 @@ class MobileNetV2(nn.Module):
         self.avgpool = nn.AvgPool2d(H, ceil_mode=True)
 
         self._initialize_weights()
-        print(T, width_mult)
 
     def get_bn_before_relu(self):
         bn1 = self.blocks[1][-1].conv[-1]
