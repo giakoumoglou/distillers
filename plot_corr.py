@@ -13,7 +13,7 @@ import torch
 import torch.nn as nn
 
 from models import model_dict
-from dataset.cifar100 import get_cifar100_dataloaders
+from datasets import get_cifar100_dataloaders, get_cifar10_dataloaders
 
 
 def parse_option():
@@ -33,20 +33,12 @@ def parse_option():
     parser.add_argument('--path_s', type=str, default=None, help='student model snapshot')
     parser.add_argument('--path_t', type=str, default=None, help='teacher model snapshot')
 
-    opt = parser.parse_args()
-    
-    opt.model_s = 'MobileNetV2'
-    #opt.path_s = './save/models/wrn_40_1_vanilla/ckpt_epoch_240.pth'
-    opt.path_s = './save/student_models/ICD_S_MobileNetV2_T_ResNet50_cifar100_r_1_a_1.0_b_1.0_trial_1/ckpt_epoch_240.pth'
-    
-    opt.path_t = './save/models/ResNet50_vanilla/ckpt_epoch_240.pth'
-    #opt.plot_multiple = True
-    
+    opt = parser.parse_args()    
     return opt
 
 
 def get_teacher_name(model_path):
-    """Parse teacher name"""
+    """ Parse teacher name """
     segments = model_path.split('/')[-2].split('_')
     if segments[0] != 'wrn':
         return segments[0]
@@ -55,6 +47,7 @@ def get_teacher_name(model_path):
 
 
 def load_teacher(model_path, n_cls):
+    """ Load teacher model """
     print('==> Loading teacher model')
     model_t = get_teacher_name(model_path)
     model = model_dict[model_t](num_classes=n_cls)
@@ -66,6 +59,7 @@ def load_teacher(model_path, n_cls):
     return model
 
 def load_student(model_path, n_cls, model_s):
+    """ Load student model """
     print('==> Loading student model')
     model = model_dict[model_s](num_classes=n_cls)
     try:
@@ -80,26 +74,38 @@ def main():
 
     opt = parse_option()
 
-    # dataloader
+    ###########################
+    ####### Data loader #######
+    ###########################
     if opt.dataset == 'cifar100':
         train_loader, val_loader = get_cifar100_dataloaders(batch_size=256, num_workers=8, is_instance=False)
         n_cls = 100
+    elif opt.dataset == 'cifar10':
+        train_loader, val_loader = get_cifar10_dataloaders(batch_size=256, num_workers=8, is_instance=False)
+        n_cls = 10
     else:
         raise NotImplementedError(opt.dataset)
 
-    # model
+    ###########################
+    ########## Model ##########
+    ###########################
     model_t = load_teacher(opt.path_t, n_cls)
     model_s = load_student(opt.path_s, n_cls, opt.model_s)
     
     if torch.cuda.is_available():
         model_t.cuda()
         model_s.cuda()
-    
+
+    ###########################
+    ######## Mock data ########
+    ###########################
     data = torch.randn(2, 3, 32, 32)
     model_t.eval()
     model_s.eval()
     
-    # validate teacher and student accuracy
+    ###########################
+    ### Eval teacher/student ##
+    ###########################
     if opt.eval:
         teacher_acc, _, _ = validate(val_loader, model_t, nn.CrossEntropyLoss(), opt)
         print(f'Teacher accuracy: {teacher_acc.item()}%')
@@ -107,7 +113,9 @@ def main():
         student_acc, _, _ = validate(val_loader, model_s, nn.CrossEntropyLoss(), opt)
         print(f'Student accuracy: {student_acc.item()}%')
     
-    # correlation difference norm
+    ###########################
+    ######## Correlation #######
+    ###########################
     if opt.plot_multiple:
         for i, (data, targets) in enumerate(val_loader):
             if i >= 30:
@@ -142,7 +150,7 @@ def main():
 
 
 def correlation_matrix_norm(logits):
-    """Compute the correlation matrix from logits, ensuring each feature has unit variance."""
+    """ Compute the correlation matrix from logits, ensuring each feature has unit variance """
     logits_centered = logits - logits.mean(dim=0)
     logits_normalized = logits_centered / logits_centered.std(dim=0, keepdim=True)
     correlation = torch.mm(logits_normalized.T, logits_normalized) / logits.size(0)
@@ -150,13 +158,13 @@ def correlation_matrix_norm(logits):
 
 
 def correlation_matrix(logits):
-    """Compute the correlation matrix from logits, ensuring each feature has unit variance."""
+    """ Compute the correlation matrix from logits, ensuring each feature has unit variance """
     correlation = torch.mm(logits.T, logits) / logits.size(0)
     return correlation
 
 
 def plot_difference(corr_t, corr_s, filename='fig'):
-    """Plot the difference in correlation matrices as a heatmap."""
+    """ Plot the difference in correlation matrices as a heatmap """
     diff_corr = corr_t - corr_s
     plt.figure(figsize=(10, 8))
     im = plt.imshow(diff_corr, cmap='PuOr',)# vmin=-0.3, vmax=0.3)
@@ -170,7 +178,7 @@ def plot_difference(corr_t, corr_s, filename='fig'):
 
 
 def validate(val_loader, model, criterion, opt):
-    """Validation"""
+    """ Validation """
     batch_time = AverageMeter()
     losses = AverageMeter()
     top1 = AverageMeter()
@@ -217,7 +225,7 @@ def validate(val_loader, model, criterion, opt):
 
 
 class AverageMeter(object):
-    """Computes and stores the average and current value"""
+    """ Computes and stores the average and current value """
     def __init__(self):
         self.reset()
 
@@ -235,7 +243,7 @@ class AverageMeter(object):
 
 
 def accuracy(output, target, topk=(1,)):
-    """Computes the accuracy over the k top predictions for the specified values of k"""
+    """ Computes the accuracy over the k top predictions for the specified values of k """
     with torch.no_grad():
         maxk = max(topk)
         batch_size = target.size(0)
