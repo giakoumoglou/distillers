@@ -21,7 +21,7 @@ from models.util import ConvReg, LinearEmbed, Connector, Translator, Paraphraser
 from datasets import get_cifar100_dataloaders, get_cifar100_dataloaders_sample
 from datasets import get_cifar10_dataloaders, get_cifar10_dataloaders_sample
 from distillers import DistillKL, HintLoss, Attention, Similarity, Correlation, VIDLoss, RKDLoss, PKT, ABLoss, FactorTransfer, KDSVD, FSP, NSTLoss, CRDLoss
-from distillers import ICDLoss, RCDLoss
+from distillers import RCDLoss, ICDLoss
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -91,8 +91,8 @@ def parse_option():
         opt.learning_rate = 0.01
 
     # Set the path according to the environment
-    opt.model_path = './results/student/student_model'
-    opt.tb_path = './results/student/student_tensorboards'
+    opt.model_path = './save/student/student_model'
+    opt.tb_path = './save/student/student_tensorboards'
 
     iterations = opt.lr_decay_epochs.split(',')
     opt.lr_decay_epochs = list([])
