@@ -3,9 +3,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-"""
-Original Author: Wei Yang
-"""
 
 __all__ = ['wrn']
 

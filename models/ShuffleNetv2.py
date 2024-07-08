@@ -1,6 +1,3 @@
-'''ShuffleNetV2 in PyTorch.
-See the paper "ShuffleNet V2: Practical Guidelines for Efficient CNN Architecture Design" for more details.
-'''
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

@@ -1,13 +1,10 @@
-"""
-MobileNetV2 implementation used in
-<Knowledge Distillation via Route Constrained Optimization>
-"""
-
 import torch
 import torch.nn as nn
 import math
 
+
 __all__ = ['mobilenetv2_T_w', 'mobile_half']
+
 
 BN = None
 

@@ -1,6 +1,3 @@
-'''ShuffleNet in PyTorch.
-See the paper "ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices" for more details.
-'''
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

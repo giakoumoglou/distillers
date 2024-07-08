@@ -17,12 +17,12 @@ import torch.backends.cudnn as cudnn
 from torch.utils.tensorboard import SummaryWriter
 
 from models import model_dict
-from dataset.cifar100 import get_cifar100_dataloaders
+from datasets import get_cifar100_dataloaders, get_cifar10_dataloaders
 
 
 def parse_option():
 
-    parser = argparse.ArgumentParser('argument for training')
+    parser = argparse.ArgumentParser('PyTorch Knowledge Distillation - Teacher training')
 
     parser.add_argument('--print_freq', type=int, default=100, help='print frequency')
     parser.add_argument('--tb_freq', type=int, default=500, help='tb frequency')
@@ -31,20 +31,21 @@ def parse_option():
     parser.add_argument('--num_workers', type=int, default=8, help='num of workers to use')
     parser.add_argument('--epochs', type=int, default=240, help='number of training epochs')
 
-    # optimization
+    # Optimization
     parser.add_argument('--learning_rate', type=float, default=0.05, help='learning rate')
     parser.add_argument('--lr_decay_epochs', type=str, default='150,180,210', help='where to decay lr, can be a list')
     parser.add_argument('--lr_decay_rate', type=float, default=0.1, help='decay rate for learning rate')
     parser.add_argument('--weight_decay', type=float, default=5e-4, help='weight decay')
     parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
 
-    # dataset
+    # Model
     parser.add_argument('--model', type=str, default='resnet8', choices=['resnet8', 'resnet14', 'resnet20', 'resnet32', 
                                                                          'resnet44', 'resnet56', 'resnet110', 'resnet8x4', 
                                                                          'resnet32x4', 'wrn_16_1', 'wrn_16_2', 'wrn_40_1', 
                                                                          'wrn_40_2', 'vgg8', 'vgg11', 'vgg13', 'vgg16', 
                                                                          'vgg19', 'ResNet50', 'MobileNetV2', 'ShuffleV1', 'ShuffleV2'])
-    parser.add_argument('--dataset', type=str, default='cifar100', choices=['cifar100'], help='dataset')
+    # Dataset
+    parser.add_argument('--dataset', type=str, default='cifar100', choices=['cifar100', 'cifar10'], help='dataset')
 
     parser.add_argument('-t', '--trial', type=int, default=0, help='the experiment id')
 
@@ -55,20 +56,15 @@ def parse_option():
         opt.learning_rate = 0.01
 
     # set the path according to the environment
-    opt.model_path = './save/models'
-    opt.tb_path = './save/tensorboard'
+    opt.model_path = './results/teacher/models'
+    opt.tb_path = './results/teacher/tensorboard'
 
     iterations = opt.lr_decay_epochs.split(',')
     opt.lr_decay_epochs = list([])
     for it in iterations:
         opt.lr_decay_epochs.append(int(it))
 
-    opt.model_name = '{}_{}_lr_{}_decay_{}_trial_{}'.format(opt.model, 
-                                                            opt.dataset, 
-                                                            opt.learning_rate,
-                                                            opt.weight_decay, 
-                                                            opt.trial,
-                                                            )
+    opt.model_name = '{}_{}_trial_{}'.format(opt.dataset, opt.model, opt.trial)
 
     opt.tb_folder = os.path.join(opt.tb_path, opt.model_name)
     if not os.path.isdir(opt.tb_folder):
@@ -86,22 +82,27 @@ def main():
 
     opt = parse_option()
 
-    # dataloader
+    ###########################
+    ####### Data loader #######
+    ###########################
     if opt.dataset == 'cifar100':
         train_loader, val_loader = get_cifar100_dataloaders(batch_size=opt.batch_size, num_workers=opt.num_workers)
         n_cls = 100
+    elif opt.dataset == 'cifar10':
+        train_loader, val_loader = get_cifar10_dataloaders(batch_size=opt.batch_size, num_workers=opt.num_workers)
+        n_cls = 10
     else:
         raise NotImplementedError(opt.dataset)
 
-    # model
+    ###########################
+    ########## Model ##########
+    ###########################
     model = model_dict[opt.model](num_classes=n_cls)
 
-    # optimizer
-    optimizer = optim.SGD(model.parameters(),
-                          lr=opt.learning_rate,
-                          momentum=opt.momentum,
-                          weight_decay=opt.weight_decay,
-                          )
+    ###########################
+    ######## Optimizer ########
+    ###########################
+    optimizer = optim.SGD(model.parameters(), lr=opt.learning_rate, momentum=opt.momentum, weight_decay=opt.weight_decay)
 
     criterion = nn.CrossEntropyLoss()
 
@@ -110,19 +111,23 @@ def main():
         criterion = criterion.cuda()
         cudnn.benchmark = True
 
-    # tensorboard
+    ###########################
+    ####### Tensorboard #######
+    ###########################
     logger = SummaryWriter(opt.tb_folder)
 
-    # routine
+    ###########################
+    ######### Routine #########
+    ###########################
     for epoch in range(1, opt.epochs + 1):
 
         adjust_learning_rate(epoch, opt, optimizer)
-        print("==> training...")
+        print("==> Training...")
 
         time1 = time.time()
         train_acc, train_loss = train(epoch, train_loader, model, criterion, optimizer, opt)
         time2 = time.time()
-        print('epoch {}, total time {:.2f}'.format(epoch, time2 - time1))
+        print('Epoch {}, total time {:.2f}'.format(epoch, time2 - time1))
 
         logger.add_scalar('train_acc', train_acc, epoch)
         logger.add_scalar('train_loss', train_loss, epoch)
@@ -160,7 +165,9 @@ def main():
     # The results reported in the paper/README is from the last epoch.
     print('==> Best accuracy:', best_acc)
 
-    # save model
+   ###########################
+   ####### Save final ########
+   ###########################
     state = {
         'opt': opt,
         'model': model.state_dict(),
@@ -172,7 +179,7 @@ def main():
 
 
 def train(epoch, train_loader, model, criterion, optimizer, opt):
-    """Vanilla training"""
+    """ Vanilla training """
     model.train()
 
     batch_time = AverageMeter()
@@ -190,7 +197,7 @@ def train(epoch, train_loader, model, criterion, optimizer, opt):
             input = input.cuda()
             target = target.cuda()
 
-        # ===================forward=====================
+        # ===================Forward=====================
         output = model(input)
         loss = criterion(output, target)
 
@@ -199,19 +206,16 @@ def train(epoch, train_loader, model, criterion, optimizer, opt):
         top1.update(acc1[0], input.size(0))
         top5.update(acc5[0], input.size(0))
 
-        # ===================backward=====================
+        # ===================Backward=====================
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
-        # ===================meters=====================
+        # ===================Meters=====================
         batch_time.update(time.time() - end)
         end = time.time()
 
-        # Tensorboard logger
-        pass
-
-        # print info
+        # ===================Print======================
         if idx % opt.print_freq == 0:
             print('Epoch: [{0}][{1}/{2}]\t'
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
@@ -223,20 +227,18 @@ def train(epoch, train_loader, model, criterion, optimizer, opt):
                    data_time=data_time, loss=losses, top1=top1, top5=top5))
             sys.stdout.flush()
 
-    print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
-          .format(top1=top1, top5=top5))
-
+    print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'.format(top1=top1, top5=top5))
     return top1.avg, losses.avg
 
 
 def validate(val_loader, model, criterion, opt):
-    """Validation"""
+    """ Validation """
     batch_time = AverageMeter()
     losses = AverageMeter()
     top1 = AverageMeter()
     top5 = AverageMeter()
 
-    # switch to evaluate mode
+    # Switch to evaluate mode
     model.eval()
 
     with torch.no_grad():
@@ -248,20 +250,21 @@ def validate(val_loader, model, criterion, opt):
                 input = input.cuda()
                 target = target.cuda()
 
-            # compute output
+            # Compute output
             output = model(input)
             loss = criterion(output, target)
 
-            # measure accuracy and record loss
+            # Measure accuracy and record loss
             acc1, acc5 = accuracy(output, target, topk=(1, 5))
             losses.update(loss.item(), input.size(0))
             top1.update(acc1[0], input.size(0))
             top5.update(acc5[0], input.size(0))
 
-            # measure elapsed time
+            # Measure elapsed time
             batch_time.update(time.time() - end)
             end = time.time()
 
+            # Print
             if idx % opt.print_freq == 0:
                 print('Test: [{0}/{1}]\t'
                       'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
@@ -271,14 +274,12 @@ def validate(val_loader, model, criterion, opt):
                        idx, len(val_loader), batch_time=batch_time, loss=losses,
                        top1=top1, top5=top5))
 
-        print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'
-              .format(top1=top1, top5=top5))
-
+        print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'.format(top1=top1, top5=top5))
     return top1.avg, top5.avg, losses.avg
 
 
 class AverageMeter(object):
-    """Computes and stores the average and current value"""
+    """ Computes and stores the average and current value """
     def __init__(self):
         self.reset()
 
@@ -296,7 +297,7 @@ class AverageMeter(object):
 
 
 def accuracy(output, target, topk=(1,)):
-    """Computes the accuracy over the k top predictions for the specified values of k"""
+    """ Computes the accuracy over the k top predictions for the specified values of k """
     with torch.no_grad():
         maxk = max(topk)
         batch_size = target.size(0)
@@ -313,14 +314,14 @@ def accuracy(output, target, topk=(1,)):
     
     
 def adjust_learning_rate_new(epoch, optimizer, LUT):
-    """Learning rate schedule according to RotNet"""
+    """ Learning rate schedule according to RotNet """
     lr = next((lr for (max_epoch, lr) in LUT if max_epoch > epoch), LUT[-1][1])
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
 
 def adjust_learning_rate(epoch, opt, optimizer):
-    """Sets the learning rate to the initial LR decayed by decay rate every steep step"""
+    """ Sets the learning rate to the initial LR decayed by decay rate every steep step """
     steps = np.sum(epoch > np.asarray(opt.lr_decay_epochs))
     if steps > 0:
         new_lr = opt.learning_rate * (opt.lr_decay_rate ** steps)
