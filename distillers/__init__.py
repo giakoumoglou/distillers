@@ -11,7 +11,8 @@ from .PKT import PKT
 from .RKD import RKDLoss
 from .SP import Similarity
 from .VID import VIDLoss
+from .CRD import CRDLoss
 
 from .ICD import ICDLoss
-from .CRD import CRDLoss
+from .RCD import RCDLoss
 from .CCD import CCDLoss
