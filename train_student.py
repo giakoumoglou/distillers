@@ -208,6 +208,7 @@ def main():
     ###########################
     criterion_cls = nn.CrossEntropyLoss()
     criterion_div = DistillKL(opt.kd_T)
+    
     if opt.distill == 'kd':
         criterion_kd = DistillKL(opt.kd_T)
     elif opt.distill == 'hint':
