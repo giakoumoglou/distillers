@@ -13,35 +13,27 @@ import torch
 import torch.nn as nn
 
 from models import model_dict
-from dataset.cifar100 import get_cifar100_dataloaders
+from datasets import get_cifar100_dataloaders, get_cifar10_dataloaders
 
 
 def parse_option():
 
-    parser = argparse.ArgumentParser('argument for training')
+    parser = argparse.ArgumentParser('PyTorch Knowledge Distillation - Correlation visualization')
     
     parser.add_argument('--print_freq', type=int, default=100, help='print frequency')
     parser.add_argument('--eval', action='store_true', help='evaluate student and teacher')
     parser.add_argument('--filename', type=str, default='fig', help='name of figure')
     parser.add_argument('--plot_multiple', action='store_true', help='plot multiple images')
 
-    # dataset
+    # Dataset
     parser.add_argument('--dataset', type=str, default='cifar100', choices=['cifar100'], help='dataset')
 
-    # model
+    # Model
     parser.add_argument('--model_s', type=str, default='resnet8', choices=['resnet8', 'resnet14', 'resnet20', 'resnet32', 'resnet44', 'resnet56', 'resnet110', 'resnet8x4', 'resnet32x4', 'wrn_16_1', 'wrn_16_2', 'wrn_40_1', 'wrn_40_2', 'vgg8', 'vgg11', 'vgg13', 'vgg16', 'vgg19', 'ResNet50', 'MobileNetV2', 'ShuffleV1', 'ShuffleV2'])
     parser.add_argument('--path_s', type=str, default=None, help='student model snapshot')
     parser.add_argument('--path_t', type=str, default=None, help='teacher model snapshot')
 
     opt = parser.parse_args()
-    
-    opt.model_s = 'MobileNetV2'
-    #opt.path_s = './save/models/wrn_40_1_vanilla/ckpt_epoch_240.pth'
-    opt.path_s = './save/student_models/ICD_S_MobileNetV2_T_ResNet50_cifar100_r_1_a_1.0_b_1.0_trial_1/ckpt_epoch_240.pth'
-    
-    opt.path_t = './save/models/ResNet50_vanilla/ckpt_epoch_240.pth'
-    #opt.plot_multiple = True
-    
     return opt
 
 
@@ -80,14 +72,17 @@ def main():
 
     opt = parse_option()
 
-    # dataloader
+    # Dataloader
     if opt.dataset == 'cifar100':
         train_loader, val_loader = get_cifar100_dataloaders(batch_size=256, num_workers=8, is_instance=False)
         n_cls = 100
+    elif opt.dataset == 'cifar10':
+        train_loader, val_loader = get_cifar10_dataloaders(batch_size=256, num_workers=8, is_instance=False)
+        n_cls = 10
     else:
         raise NotImplementedError(opt.dataset)
 
-    # model
+    # Model
     model_t = load_teacher(opt.path_t, n_cls)
     model_s = load_student(opt.path_s, n_cls, opt.model_s)
     
@@ -99,7 +94,7 @@ def main():
     model_t.eval()
     model_s.eval()
     
-    # validate teacher and student accuracy
+    # Validate teacher and student accuracy
     if opt.eval:
         teacher_acc, _, _ = validate(val_loader, model_t, nn.CrossEntropyLoss(), opt)
         print(f'Teacher accuracy: {teacher_acc.item()}%')
@@ -107,7 +102,7 @@ def main():
         student_acc, _, _ = validate(val_loader, model_s, nn.CrossEntropyLoss(), opt)
         print(f'Student accuracy: {student_acc.item()}%')
     
-    # correlation difference norm
+    # Correlation difference norm
     if opt.plot_multiple:
         for i, (data, targets) in enumerate(val_loader):
             if i >= 30:
