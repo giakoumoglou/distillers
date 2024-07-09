@@ -59,7 +59,7 @@ class RCDLoss(nn.Module):
         ptr = int(self.queue_ptr)
         assert self.nce_k % batch_size == 0 # for simplicity
         self.queue[ptr : ptr + batch_size] = keys
-        ptr = (ptr + batch_size) % self.K  # move pointer
+        ptr = (ptr + batch_size) % self.nce_k  # move pointer
         self.queue_ptr[0] = ptr
 
         
