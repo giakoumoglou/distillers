@@ -511,7 +511,7 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
 
     end = time.time()
     for idx, data in enumerate(train_loader):
-        if opt.distill in ['crd', 'rcdv2']:
+        if opt.distill in ['crd']:
             input, target, index, contrast_idx = data
         else:
             input, target, index = data
@@ -522,7 +522,7 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
             input = input.cuda()
             target = target.cuda()
             index = index.cuda()
-            if opt.distill in ['crd', 'rcdv2']:
+            if opt.distill in ['crd']:
                 contrast_idx = contrast_idx.cuda()
 
         # ===================Forward=====================
@@ -546,10 +546,6 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
             f_t = feat_t[opt.hint_layer]
             loss_kd = criterion_kd(f_s, f_t)
         elif opt.distill == 'crd':
-            f_s = feat_s[-1]
-            f_t = feat_t[-1]
-            loss_kd = criterion_kd(f_s, f_t, index, contrast_idx)
-        elif opt.distill == 'rcdv2':
             f_s = feat_s[-1]
             f_t = feat_t[-1]
             loss_kd = criterion_kd(f_s, f_t, index, contrast_idx)
@@ -604,14 +600,6 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
             f_s = feat_s[-1]
             f_t = feat_t[-1]
             loss_kd = criterion_kd(f_s, f_t)
-        elif opt.distill == 'contrast':
-            f_s = feat_s[-1]
-            f_t = feat_t[-1]
-            loss_kd = criterion_kd(f_s, f_t, target, use_valid_negatives=True)
-        elif opt.distill == 'contrast_all':
-            f_s = feat_s[-1]
-            f_t = feat_t[-1]
-            loss_kd = criterion_kd(f_s, f_t, target, use_valid_negatives=False)
         elif opt.distill == 'icd':
             f_s = feat_s[-1]
             f_t = feat_t[-1]
