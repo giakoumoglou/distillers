@@ -9,23 +9,21 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class RCDLoss(nn.Module):
+class CCDLoss(nn.Module):
     """
-    Relational Consistency for Knowledge Distillation
+    Contrastive Consistency for Knowledge Distillation
     
     Args:
         opt.s_dim: the dimension of student's feature
         opt.t_dim: the dimension of teacher's feature
         opt.feat_dim: the dimension of the projection space
         opt.nce_k: number of instances in queue
-        opt.nce_t_s: the temperature (default: 0.04)
-        opt.nce_t_t: the temperature (default: 0.1)
+        opt.nce_t: the temperature (default: 0.07)
     """
     def __init__(self, opt):
-        super(RCDLoss, self).__init__()
+        super(CCDLoss, self).__init__()
         self.nce_k = opt.nce_k
-        self.nce_t_s = opt.nce_t_s
-        self.nce_t_t = opt.nce_t_t
+        self.nce_t = opt.nce_t
         
         self.embed_s = Embed(opt.s_dim, opt.feat_dim)
         self.embed_t = Embed(opt.t_dim, opt.feat_dim)
@@ -36,16 +34,17 @@ class RCDLoss(nn.Module):
     
     def forward(self, f_s, f_t):
         """
-        Compute the RCD loss between student features (f_s) and teacher features (f_t).
+        Compute the InfoNCE loss between student features (f_s) and teacher features (f_t).
         """
         f_s = self.embed_s(f_s)
         f_t = self.embed_t(f_t)  
 
-        l_s = torch.einsum("nc,kc->nk", [f_s, self.queue.clone().detach()])
-        l_t = torch.einsum("nc,kc->nk", [f_t, self.queue.clone().detach()])
+        l_pos = torch.einsum("nc,nc->n", [f_s, f_t]).unsqueeze(-1)
+        l_neg = torch.einsum("nc,kc->nk", [f_s, self.queue.clone().detach()])
 
-        loss = - torch.sum(F.softmax(l_t.detach() / self.nce_t_t, dim=1) *
-                           F.log_softmax(l_s / self.nce_t_s, dim=1), dim=1).mean()
+        logits = torch.cat([l_pos, l_neg], dim=1) / self.nce_t
+        labels = torch.zeros(logits.shape[0], dtype=torch.long, device=logits.device)
+        loss = F.cross_entropy(logits, labels)
 
         self._dequeue_and_enqueue(f_t)
 
