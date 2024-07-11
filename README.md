@@ -27,21 +27,19 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 
 ### Benchmarks 13 state-of-the-art knowledge distillation methods in PyTorch
 
-(KD) - Distilling the Knowledge in a Neural Network  
-(FitNet) - Fitnets: hints for thin deep nets  
-(AT) - Paying More Attention to Attention: Improving the Performance of Convolutional Neural Networks
-    via Attention Transfer  
-(SP) - Similarity-Preserving Knowledge Distillation  
-(CC) - Correlation Congruence for Knowledge Distillation  
-(VID) - Variational Information Distillation for Knowledge Transfer  
-(RKD) - Relational Knowledge Distillation  
-(PKT) - Probabilistic Knowledge Transfer for deep representation learning  
-(AB) - Knowledge Transfer via Distillation of Activation Boundaries Formed by Hidden Neurons  
-(FT) - Paraphrasing Complex Network: Network Compression via Factor Transfer  
-(FSP) - A Gift from Knowledge Distillation:
-    Fast Optimization, Network Minimization and Transfer Learning  
-(NST) - Like what you like: knowledge distill via neuron selectivity transfer  
-(CRD) - Contrastive Representation Distillation  
+1. (KD) - Distilling the Knowledge in a Neural Network
+2. (FitNet) - Fitnets: hints for thin deep nets
+3. (AT) - Paying More Attention to Attention: Improving the Performance of Convolutional Neural Networks via Attention Transfer
+4. (SP) - Similarity-Preserving Knowledge Distillation
+5. (CC) - Correlation Congruence for Knowledge Distillation
+6. (VID) - Variational Information Distillation for Knowledge Transfer
+7. (RKD) - Relational Knowledge Distillation
+8. (PKT) - Probabilistic Knowledge Transfer for deep representation learning
+9. (AB) - Knowledge Transfer via Distillation of Activation Boundaries Formed by Hidden Neurons
+10. (FT) - Paraphrasing Complex Network: Network Compression via Factor Transfer
+11. (FSP) - A Gift from Knowledge Distillation: Fast Optimization, Network Minimization and Transfer Learning
+12. (NST) - Like what you like: knowledge distill via neuron selectivity transfer
+13. (CRD) - Contrastive Representation Distillation
 
 ### Installation
 
