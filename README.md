@@ -16,7 +16,7 @@ It also includes the implementation of and [XXX paper](https://arxiv.org/abs/XXX
 ```
 @Article{giakoumoglou2024relational,
   author  = {Giakoumoglou Nikolaos and Stathaki Tania},
-  title   = {Relational Consistency for Knowledge Distillation},
+  title   = {Relational Representation Distillation},
   journal = {arXiv preprint arXiv:XXXX.XXXXX},
   year    = {2024},
 }
