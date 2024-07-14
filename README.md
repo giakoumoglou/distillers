@@ -85,22 +85,11 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill icd --model_s resnet8x4 -a 0 -b 1 --trial 1
     ```
     
-   And the command for running RCD is:
-   
-   ```
-    python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill rcd --model_s resnet8x4 -a 0 -b 1 --trial 1
-    ```
-    
 3. Combining a distillation objective with KD is simply done by setting `-a` as a non-zero value.
 
    The command for running ICD+KD is:
     ```
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill icd --model_s resnet8x4 -a 1 -b 1 --trial 1     
-    ```
-
-    And the command for running RCD+KD is:
-    ```
-    python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill rcd --model_s resnet8x4 -a 1 -b 1 --trial 1     
     ```
 
 4. Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
