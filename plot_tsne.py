@@ -23,8 +23,6 @@ def parse_option():
     parser.add_argument('--path', type=str, default=None, help='model snapshot')
     parser.add_argument('--filename', type=str, default='fig', help='name of figure')
     opt = parser.parse_args()
-    opt.model = 'wrn_40_1'
-    opt.path = './results/student_models/KD_S_wrn_40_1_T_wrn_40_2_cifar100_r_0.1_a_0.9_b_0.0_trial_99/ckpt_epoch_240.pth'
     return opt
 
 

@@ -14,5 +14,5 @@ from .VID import VIDLoss
 from .CRD import CRDLoss
 
 from .ICD import ICDLoss
-from .RCD import RCDLoss
-from .CCD import CCDLoss
+from .RRD import RRDLoss
+from .CD import CDLoss

@@ -21,7 +21,7 @@ from models.util import ConvReg, LinearEmbed, Connector, Translator, Paraphraser
 from datasets import get_cifar100_dataloaders, get_cifar100_dataloaders_sample
 from datasets import get_cifar10_dataloaders, get_cifar10_dataloaders_sample
 from distillers import DistillKL, HintLoss, Attention, Similarity, Correlation, VIDLoss, RKDLoss, PKT, ABLoss, FactorTransfer, KDSVD, FSP, NSTLoss, CRDLoss
-from distillers import RCDLoss, ICDLoss, CCDLoss
+from distillers import RRDLoss, ICDLoss, CCDLoss
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -63,7 +63,7 @@ def parse_option():
     parser.add_argument('--distill', type=str, default='kd', choices=['kd', 'hint', 'attention', 'similarity', 
                                                                       'correlation', 'vid', 'crd', 'kdsvd', 
                                                                       'fsp','rkd', 'pkt', 'abound', 'factor','nst', 
-                                                                      'icd', 'rcd', 'ccd'])
+                                                                      'icd', 'rrd', 'ccd'])
     parser.add_argument('--trial', type=str, default='1', help='trial id')
     parser.add_argument('-r', '--gamma', type=float, default=1, help='weight for classification')
     parser.add_argument('-a', '--alpha', type=float, default=None, help='weight balance for KD')
@@ -281,10 +281,10 @@ def main():
         init_trainable_list.append(model_s.get_feat_modules())
         init(model_s, model_t, init_trainable_list, criterion_kd, train_loader, logger, opt)
         pass
-    elif opt.distill == 'rcd':
+    elif opt.distill == 'rrd':
         opt.s_dim = feat_s[-1].shape[1]
         opt.t_dim = feat_t[-1].shape[1]
-        criterion_kd = RCDLoss(opt)
+        criterion_kd = RRDLoss(opt)
         module_list.append(criterion_kd.embed_s)
         module_list.append(criterion_kd.embed_t)
         trainable_list.append(criterion_kd.embed_s)
@@ -605,7 +605,7 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
             factor_s = module_list[1](feat_s[-2])
             factor_t = module_list[2](feat_t[-2], is_factor=True)
             loss_kd = criterion_kd(factor_s, factor_t)
-        elif opt.distill == 'rcd':
+        elif opt.distill == 'rrd':
             f_s = feat_s[-1]
             f_t = feat_t[-1]
             loss_kd = criterion_kd(f_s, f_t)
