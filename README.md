@@ -16,7 +16,7 @@ This is a PyTorch implementation of the [ICD paper](https://arxiv.org/abs/2407.1
 
 It also includes the implementation of and [RRD paper](https://arxiv.org/abs/2407.12073):
 ```
-@misc{giakoumoglou2024relational,
+@Article{giakoumoglou2024relational,
       title={Relational Representation Distillation}, 
       author={Nikolaos Giakoumoglou and Tania Stathaki},
       year={2024},
