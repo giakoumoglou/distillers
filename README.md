@@ -17,11 +17,14 @@ This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.X
 It also includes the implementation of and [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
 
 ```
-@Article{giakoumoglou2024relational,
-  author  = {Giakoumoglou Nikolaos and Stathaki Tania},
-  title   = {Relational Representation Distillation},
-  journal = {arXiv preprint arXiv:XXXX.XXXXX},
-  year    = {2024},
+@misc{giakoumoglou2024relational,
+      title={Relational Representation Distillation}, 
+      author={Nikolaos Giakoumoglou and Tania Stathaki},
+      year={2024},
+      eprint={2407.12073},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2407.12073}, 
 }
 ```
 
