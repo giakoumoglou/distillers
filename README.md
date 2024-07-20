@@ -4,10 +4,13 @@ This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.X
 
 ```
 @Article{giakoumoglou2024invariant,
-  author  = {Giakoumoglou Nikolaos and Stathaki Tania},
-  title   = {Invariant Consistency for Knowledge Distillation},
-  journal = {arXiv preprint arXiv:XXXX.XXXXX},
-  year    = {2024},
+      title={Invariant Consistency for Knowledge Distillation}, 
+      author={Nikolaos Giakoumoglou and Tania Stathaki},
+      year={2024},
+      eprint={2407.11802},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2407.11802}, 
 }
 ```
 
