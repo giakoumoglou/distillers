@@ -1,6 +1,6 @@
 ## Distillers
 
-This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
+This is a PyTorch implementation of the [ICD paper](https://arxiv.org/abs/2407.11802):
 
 ```
 @Article{giakoumoglou2024invariant,
@@ -14,8 +14,7 @@ This is a PyTorch implementation of the [XXX paper](https://arxiv.org/abs/XXXX.X
 }
 ```
 
-It also includes the implementation of and [XXX paper](https://arxiv.org/abs/XXXX.XXXXX):
-
+It also includes the implementation of and [RRD paper](https://arxiv.org/abs/2407.12073):
 ```
 @misc{giakoumoglou2024relational,
       title={Relational Representation Distillation}, 
