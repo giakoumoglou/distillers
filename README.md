@@ -33,7 +33,7 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 ### Benchmarks 13 state-of-the-art knowledge distillation methods in PyTorch
 
 1. (KD) - Distilling the Knowledge in a Neural Network
-2. (FitNet) - Fitnets: hints for thin deep nets
+2. (FitNet) - Fitnets: Hints for Thin Deep Nets
 3. (AT) - Paying More Attention to Attention: Improving the Performance of Convolutional Neural Networks via Attention Transfer
 4. (SP) - Similarity-Preserving Knowledge Distillation
 5. (CC) - Correlation Congruence for Knowledge Distillation
@@ -43,7 +43,7 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 9. (AB) - Knowledge Transfer via Distillation of Activation Boundaries Formed by Hidden Neurons
 10. (FT) - Paraphrasing Complex Network: Network Compression via Factor Transfer
 11. (FSP) - A Gift from Knowledge Distillation: Fast Optimization, Network Minimization and Transfer Learning
-12. (NST) - Like what you like: knowledge distill via neuron selectivity transfer
+12. (NST) - Like What You Like: Knowledge Distill via Neuron Selectivity Transfer
 13. (CRD) - Contrastive Representation Distillation
 
 ### Installation
