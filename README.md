@@ -3,7 +3,7 @@
 This is a PyTorch implementation of the [ICD paper](https://arxiv.org/abs/2407.11802):
 
 ```
-@Article{giakoumoglou2024invariant,
+@misc{giakoumoglou2024invariant,
       title={Invariant Consistency for Knowledge Distillation}, 
       author={Nikolaos Giakoumoglou and Tania Stathaki},
       year={2024},
@@ -16,7 +16,7 @@ This is a PyTorch implementation of the [ICD paper](https://arxiv.org/abs/2407.1
 
 It also includes the implementation of and [RRD paper](https://arxiv.org/abs/2407.12073):
 ```
-@Article{giakoumoglou2024relational,
+@misc{giakoumoglou2024relational,
       title={Relational Representation Distillation}, 
       author={Nikolaos Giakoumoglou and Tania Stathaki},
       year={2024},
