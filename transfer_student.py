@@ -17,9 +17,14 @@ import torch.backends.cudnn as cudnn
 from torch.utils.tensorboard import SummaryWriter
 
 from models import model_dict
-from dataset.stl10 import get_stl10_dataloaders
-from dataset.tinyimagenet200 import get_tiny_imagenet_dataloaders
+from datasets import get_stl10_dataloaders
+from datasets import get_tiny_imagenet_dataloaders
 
+import warnings
+warnings.filterwarnings('ignore')
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def parse_option():
 
@@ -47,9 +52,6 @@ def parse_option():
     parser.add_argument('-t', '--trial', type=int, default=0, help='the experiment id')
 
     opt = parser.parse_args()
-    
-    opt.model_s = 'wrn_16_2'
-    opt.path_s = './save//wrn_16_2_last.pth'
     
     # set different learning rate from these 4 models
     if opt.model_s in ['MobileNetV2', 'ShuffleV1', 'ShuffleV2']:
@@ -144,7 +146,7 @@ def main():
     for epoch in range(1, opt.epochs + 1):
 
         adjust_learning_rate(epoch, opt, optimizer)
-        print("==> training...")
+        print("==> Training...")
 
         time1 = time.time()
         train_acc, train_loss = train(epoch, train_loader, model, criterion, optimizer, opt)
