@@ -113,7 +113,7 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 6. (optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
 
 
-## Benchmark Results on CIFAR-100:
+### Benchmark Results on CIFAR-100:
 
 Performance is measured by classification accuracy (%)
 
@@ -141,6 +141,7 @@ Performance is measured by classification accuracy (%)
 | RRD | 75.01 | 73.55 | 70.71 | 70.72 | 73.10 | 74.21 | 73.99 |
 | RRD+KD | 75.66 | 73.77 | 71.72 | 71.62 | 73.48 | 74.86 | 74.32 |
 
+2. Teacher and student are of **different** architectural type.
 
 | Teacher <br> Student | vgg13 <br> MobileNetV2 | ResNet50 <br> MobileNetV2 | ResNet50 <br> vgg8 | resnet32x4 <br> ShuffleNetV1 | resnet32x4 <br> ShuffleNetV2 | wrn-40-2 <br> ShuffleNetV1 |
 |:---------------:|:-----------------:|:--------------------:|:-------------:|:-----------------------:|:-----------------------:|:---------------------:|
@@ -162,6 +163,10 @@ Performance is measured by classification accuracy (%)
 | ICD+KD | 69.37 | 69.28 | 73.88 | 75.27 | 76.53 | 76.39 |
 | RRD | 67.93 | 68.84 | 74.01 | 74.11 | 74.64 | 74.98 |
 | RRD+KD | 69.98 | 69.13 | 74.26 | 74.78 | 75.78 | 76.31 |
+
+### Acknowledgments
+
+We would like to thank Yonglong Tian for creating the framework that served as the foundation for our experiments. His work significantly contributed to the development and evaluation of our method. The framework can be found at [https://github.com/HobbitLong/RepDistiller](https://github.com/HobbitLong/RepDistiller).
 
 ### License
 
