@@ -15,4 +15,3 @@ from .CRD import CRDLoss
 
 from .ICD import ICDLoss
 from .RRD import RRDLoss
-from .CD import CDLoss
