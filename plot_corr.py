@@ -57,6 +57,7 @@ def load_teacher(model_path, n_cls):
     print('Teacher model loaded')
     return model
 
+
 def load_student(model_path, n_cls, model_s):
     print('==> Loading student model')
     model = model_dict[model_s](num_classes=n_cls)
