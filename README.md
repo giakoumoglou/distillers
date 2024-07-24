@@ -39,7 +39,7 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 5. (CC) - Correlation Congruence for Knowledge Distillation
 6. (VID) - Variational Information Distillation for Knowledge Transfer
 7. (RKD) - Relational Knowledge Distillation
-8. (PKT) - Probabilistic Knowledge Transfer for deep representation learning
+8. (PKT) - Probabilistic Knowledge Transfer for Deep Representation Learning
 9. (AB) - Knowledge Transfer via Distillation of Activation Boundaries Formed by Hidden Neurons
 10. (FT) - Paraphrasing Complex Network: Network Compression via Factor Transfer
 11. (FSP) - A Gift from Knowledge Distillation: Fast Optimization, Network Minimization and Transfer Learning
