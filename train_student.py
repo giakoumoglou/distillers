@@ -21,13 +21,7 @@ from models.util import ConvReg, LinearEmbed, Connector, Translator, Paraphraser
 from datasets import get_cifar100_dataloaders, get_cifar100_dataloaders_sample
 from datasets import get_cifar10_dataloaders, get_cifar10_dataloaders_sample
 from distillers import DistillKL, HintLoss, Attention, Similarity, Correlation, VIDLoss, RKDLoss, PKT, ABLoss, FactorTransfer, KDSVD, FSP, NSTLoss, CRDLoss
-from distillers import RRDLoss, ICDLoss, CCDLoss
-
-import warnings
-warnings.filterwarnings('ignore')
-os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+from distillers import RRDLoss, ICDLoss
 
 def parse_option():
 
@@ -63,7 +57,7 @@ def parse_option():
     parser.add_argument('--distill', type=str, default='kd', choices=['kd', 'hint', 'attention', 'similarity', 
                                                                       'correlation', 'vid', 'crd', 'kdsvd', 
                                                                       'fsp','rkd', 'pkt', 'abound', 'factor','nst', 
-                                                                      'icd', 'rrd', 'ccd'])
+                                                                      'icd', 'rrd',])
     parser.add_argument('--trial', type=str, default='1', help='trial id')
     parser.add_argument('-r', '--gamma', type=float, default=1, help='weight for classification')
     parser.add_argument('-a', '--alpha', type=float, default=None, help='weight balance for KD')
@@ -110,23 +104,6 @@ def parse_option():
     opt.save_folder = os.path.join(opt.model_path, opt.model_name)
     if not os.path.isdir(opt.save_folder):
         os.makedirs(opt.save_folder)
-        
-    # TODO: remove
-    message = "TEACHER: {} --> STUDENT: {} USING {}".format(opt.model_t.upper(), opt.model_s.upper(), opt.distill.upper())
-    message = "*" *10 + " " + message + " " + "*" * 10
-    print("*" * len(message))
-    print(message)
-    print("*" * len(message))
-    print("CUDA available:", torch.cuda.is_available())
-    print("GPUs: ", torch.cuda.device_count())
-    print("torch version:", torch.__version__)
-    if torch.cuda.is_available():
-        gpu_info = torch.cuda.get_device_properties(0)
-        print(f"GPU Name: {gpu_info.name}")
-        print(f"Total VRAM: {gpu_info.total_memory / 1e9} GB")
-    options_dict = vars(opt)
-    for key, value in options_dict.items():
-        print(f"{key}: {value}")
     return opt
 
 
@@ -299,14 +276,6 @@ def main():
         trainable_list.append(criterion_kd.embed_s)
         trainable_list.append(criterion_kd.embed_t)
         trainable_list.append(criterion_kd.params)
-    elif opt.distill == 'ccd':
-        opt.s_dim = feat_s[-1].shape[1]
-        opt.t_dim = feat_t[-1].shape[1]
-        criterion_kd = CCDLoss(opt)
-        module_list.append(criterion_kd.embed_s)
-        module_list.append(criterion_kd.embed_t)
-        trainable_list.append(criterion_kd.embed_s)
-        trainable_list.append(criterion_kd.embed_t)
     else:
         raise NotImplementedError(opt.distill)
 
@@ -394,16 +363,6 @@ def main():
     save_file = os.path.join(opt.save_folder, '{}_last.pth'.format(opt.model_s))
     torch.save(state, save_file)
     logger.close()
-
-    # TODO: remove
-    if True:
-        save_path = './save/'
-        filename = os.path.join(save_path, '{}.txt'.format(opt.distill))
-        if not os.path.exists(save_path):
-            os.makedirs(save_path)
-        with open(filename, 'a') as file:
-            line = "{} --> {} --> best_acc: {:.2f}\n".format(opt.model_t, opt.model_s, best_acc)
-            file.write(line)
 
 
 def init(model_s, model_t, init_modules, criterion, train_loader, logger, opt):
@@ -606,10 +565,6 @@ def train(epoch, train_loader, module_list, criterion_list, optimizer, opt):
             factor_t = module_list[2](feat_t[-2], is_factor=True)
             loss_kd = criterion_kd(factor_s, factor_t)
         elif opt.distill == 'rrd':
-            f_s = feat_s[-1]
-            f_t = feat_t[-1]
-            loss_kd = criterion_kd(f_s, f_t)
-        elif opt.distill == 'ccd':
             f_s = feat_s[-1]
             f_t = feat_t[-1]
             loss_kd = criterion_kd(f_s, f_t)
