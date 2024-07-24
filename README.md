@@ -113,7 +113,7 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 6. (optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
 
 
-### Benchmark Results on CIFAR-100:
+### Benchmark Results on CIFAR-100
 
 Performance is measured by classification accuracy (%)
 
