@@ -172,8 +172,7 @@ Performance is measured by classification accuracy (%)
 
 |  | **CIFAR-100 → STL-10** | **CIFAR-100 → TIN-200** |
 |:---------------------:|:-------------------:|:---------------------:|
-| Teacher | 68.6 | 31.5 |
-| Student | 69.7 | 33.7 |
+| Teacher <br> Student | 68.6 <br> 69.7 | 31.5 <br> 33.7 |
 | KD | 70.9 | 33.9 |
 | AT | 70.7 | 34.2 |
 | FitNet | 70.3 | 33.5 |
