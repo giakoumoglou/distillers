@@ -170,7 +170,7 @@ Performance is measured by classification accuracy (%)
 
 Performance is measured by classification accuracy (%)
 
-|  | **CIFAR-100 → STL-10** | **CIFAR-100 → TIN-200** |
+|  | **CIFAR-100 → STL-10** | **CIFAR-100 → Tiny ImageNet** |
 |:---------------------:|:-------------------:|:---------------------:|
 | Teacher <br> Student | 68.6 <br> 69.7 | 31.5 <br> 33.7 |
 | KD | 70.9 | 33.9 |
