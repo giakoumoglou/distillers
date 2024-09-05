@@ -179,7 +179,7 @@ Performance is measured by classification accuracy (%)
 | FitNet | 70.3 | 33.5 |
 | CRD | 71.6 | 35.6 |
 | CRD+KD | 72.2 | 35.5 |
-| ICD | 71.2 | 35 |
+| ICD | 71.2 | 35.0 |
 | ICD+KD | 72.5 | 36.2 |
 | RRD | 71.2 | 34.6 |
 | RRD+KD | 71.4 | 34.5 |
