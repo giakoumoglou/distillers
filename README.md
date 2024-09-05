@@ -166,6 +166,24 @@ Performance is measured by classification accuracy (%)
 | RRD+KD (ours) | 69.98 | 69.13 | 74.26 | 75.18 | 76.83 | 76.31 |
 
 
+### Transferability of Representations
+
+Performance is measured by classification accuracy (%)
+
+| Teacher <br> Student | CIFAR-100 → STL-10 | CIFAR-100 → TIN-200 |
+|:---------------------:|:-------------------:|:---------------------:|
+| **Teacher** <br> **Student** | 68.6 <br> 69.7 | 31.5 <br> 33.7 |
+| **KD** | 70.9 | 33.9 |
+| **AT** | 70.7 | 34.2 |
+| **FitNet** | 70.3 | 33.5 |
+| **CRD** | 71.6 | 35.6 |
+| **CRD+KD** | 72.2 | 35.5 |
+| **ICD** | 71.2 | 35 |
+| **ICD+KD** | 72.5 | 36.2 |
+| **RRD** | 71.2 | 34.6 |
+| **RRD+KD** | 71.4 | 34.5 |
+
+
 ### Acknowledgments
 
 We would like to thank Yonglong Tian for creating the framework that served as the foundation for our experiments. His work significantly contributed to the development and evaluation of our method. The framework can be found at [https://github.com/HobbitLong/RepDistiller](https://github.com/HobbitLong/RepDistiller).
