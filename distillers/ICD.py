@@ -11,7 +11,7 @@ import torch.nn.functional as F
 
 class ICDLoss(nn.Module):
     """
-    Invariant Consistency for Knowledge Distillation
+    Invariant Consistency Distillation
     
     Args:
         opt.s_dim: the dimension of student's feature
@@ -28,8 +28,8 @@ class ICDLoss(nn.Module):
         self.max_tau = max_tau
         self.alpha = alpha
         
-        self.embed_s = Embed(opt.s_dim, opt.feat_dim)
-        self.embed_t = Embed(opt.t_dim, opt.feat_dim)
+        self.embed_s = nn.Linear(opt.s_dim, opt.feat_dim)
+        self.embed_t = nn.Linear(opt.t_dim, opt.feat_dim)
     
     def forward(self, f_s, f_t):
         """
@@ -40,6 +40,7 @@ class ICDLoss(nn.Module):
         
         f_s = F.normalize(f_s, dim=1)  
         f_t = F.normalize(f_t, dim=1)  
+        
         n = f_s.size(0)
         
         tau = self.params.tau.exp().clamp(0, self.max_tau)
@@ -72,27 +73,3 @@ class LearnableParams(nn.Module):
     def forward(self):
         # This module doesn't need to do anything in forward, since it's just holding parameters.
         pass
-    
-    
-class Embed(nn.Module):
-    """Embedding module with a single linear layer and normalization."""
-    def __init__(self, dim_in, dim_out):
-        super(Embed, self).__init__()
-        self.linear = nn.Linear(dim_in, dim_out)
-        self.norm = Normalize(2)
-
-    def forward(self, x):
-        x = x.view(x.shape[0], -1)
-        x = self.linear(x)
-        return self.norm(x)
-
-
-class Normalize(nn.Module):
-    """Normalization layer"""
-    def __init__(self, power=2):
-        super(Normalize, self).__init__()
-        self.power = power
-
-    def forward(self, x):
-        norm = x.pow(self.power).sum(1, keepdim=True).pow(1. / self.power)
-        return x.div(norm)
