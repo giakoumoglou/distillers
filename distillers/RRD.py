@@ -27,8 +27,8 @@ class RRDLoss(nn.Module):
         self.nce_t_s = opt.nce_t_s
         self.nce_t_t = opt.nce_t_t
         
-        self.embed_s = Embed(opt.s_dim, opt.feat_dim)
-        self.embed_t = Embed(opt.t_dim, opt.feat_dim)
+        self.embed_s = nn.Linear(opt.s_dim, opt.feat_dim)
+        self.embed_t = nn.Linear(opt.t_dim, opt.feat_dim)
         
         self.register_buffer("queue", torch.randn(opt.nce_k, opt.feat_dim))
         self.queue = nn.functional.normalize(self.queue, dim=0)
@@ -40,6 +40,9 @@ class RRDLoss(nn.Module):
         """
         f_s = self.embed_s(f_s)
         f_t = self.embed_t(f_t)  
+        
+        f_s = F.normalize(f_s, dim=1)  
+        f_t = F.normalize(f_t, dim=1)  
 
         l_s = torch.einsum("nc,kc->nk", [f_s, self.queue.clone().detach()])
         l_t = torch.einsum("nc,kc->nk", [f_t, self.queue.clone().detach()])
@@ -51,6 +54,7 @@ class RRDLoss(nn.Module):
 
         return loss
     
+    @torch.no_grad()
     def _dequeue_and_enqueue(self, keys):
         """
         Dequeue the oldest batch of features and enqueue the current batch's keys.
@@ -61,29 +65,3 @@ class RRDLoss(nn.Module):
         self.queue[ptr : ptr + batch_size] = keys
         ptr = (ptr + batch_size) % self.nce_k # move pointer
         self.queue_ptr[0] = ptr
-
-        
-class Embed(nn.Module):
-    """Embedding module"""
-    def __init__(self, dim_in=1024, dim_out=128):
-        super(Embed, self).__init__()
-        self.linear = nn.Linear(dim_in, dim_out)
-        self.l2norm = Normalize(2)
-
-    def forward(self, x):
-        x = x.view(x.shape[0], -1)
-        x = self.linear(x)
-        x = self.l2norm(x)
-        return x
-    
-    
-class Normalize(nn.Module):
-    """Normalization layer"""
-    def __init__(self, power=2):
-        super(Normalize, self).__init__()
-        self.power = power
-
-    def forward(self, x):
-        norm = x.pow(self.power).sum(1, keepdim=True).pow(1. / self.power)
-        out = x.div(norm)
-        return out
