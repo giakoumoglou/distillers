@@ -4,7 +4,7 @@ This is a PyTorch implementation of the [ICD paper](https://arxiv.org/abs/2407.1
 
 ```
 @misc{giakoumoglou2024invariant,
-      title={Invariant Consistency for Knowledge Distillation}, 
+      title={Invariant Causal Knowledge Distillation in Neural Networks}, 
       author={Nikolaos Giakoumoglou and Tania Stathaki},
       year={2024},
       eprint={2407.11802},
