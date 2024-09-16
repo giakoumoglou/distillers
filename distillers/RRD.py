@@ -11,7 +11,8 @@ import torch.nn.functional as F
 
 class RRDLoss(nn.Module):
     """
-    Relational Representation Distillation
+    Relational Representation Distillation\
+    https://arxiv.org/abs/2407.12073
     
     Args:
         opt.s_dim: the dimension of student's feature
