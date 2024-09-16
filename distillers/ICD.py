@@ -11,7 +11,8 @@ import torch.nn.functional as F
 
 class ICDLoss(nn.Module):
     """
-    Invariant Consistency Distillation
+    Invariant Causal Knowledge Distillation in Neural Networks
+    https://arxiv.org/abs/2407.11802
     
     Args:
         opt.s_dim: the dimension of student's feature
