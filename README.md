@@ -1,10 +1,10 @@
 ## Distillers
 
-This is a PyTorch implementation of the [ICD paper](https://arxiv.org/abs/2407.11802):
+This is a PyTorch implementation of the [DCD paper](https://arxiv.org/abs/2407.11802):
 
 ```
-@misc{giakoumoglou2024invariant,
-      title={Invariant Causal Knowledge Distillation in Neural Networks}, 
+@misc{giakoumoglou2024discriminative,
+      title={DCD: Discriminative and Consistent Knowledge Distillation in Neural Networks}, 
       author={Nikolaos Giakoumoglou and Tania Stathaki},
       year={2024},
       eprint={2407.11802},
@@ -45,6 +45,8 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 11. (FSP) - A Gift from Knowledge Distillation: Fast Optimization, Network Minimization and Transfer Learning
 12. (NST) - Like What You Like: Knowledge Distill via Neuron Selectivity Transfer
 13. (CRD) - Contrastive Representation Distillation
+14. (RRD) - Relational Representation Distillation
+15. (DCD) - Discriminative and Consistent Distillation
 
 ### Installation
 
@@ -92,9 +94,9 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
     
 3. Combining a distillation objective with KD is simply done by setting `-a` as a non-zero value.
 
-   The command for running **ICD+KD** is:
+   The command for running **DCD+KD** is:
     ```
-    python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill icd --model_s resnet8x4 -a 1 -b 1 --trial 1     
+    python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill dcd --model_s resnet8x4 -a 1 -b 1 --trial 1     
     ```
 
 4. Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
@@ -136,8 +138,8 @@ Performance is measured by classification accuracy (%)
 | NST | 73.68 | 72.24 | 69.60 | 69.53 | 71.96 | 73.30 | 71.53 |
 | CRD | 75.48 | 74.14 | 71.16 | 71.46 | 73.48 | 75.51 | 73.94 |
 | CRD+KD | 75.64 | 74.38 | 71.63 | 71.56 | 73.75 | 75.46 | 74.29 |
-| ICD (ours) | 74.99 | 73.69 | 71.18 | 71.00 | 73.12 | 74.23 | 73.22 |
-| ICD+KD (ours) | 76.06 | 74.76 | 71.81 | 72.03 | 73.62 | 75.09 | 73.95 |
+| DCD (ours) | 74.99 | 73.69 | 71.18 | 71.00 | 73.12 | 74.23 | 73.22 |
+| DCD+KD (ours) | 76.06 | 74.76 | 71.81 | 72.03 | 73.62 | 75.09 | 73.95 |
 | RRD (ours) | 75.33 | 73.55 | 70.71 | 70.72 | 73.10 | 74.48 | 73.99 |
 | RRD+KD (ours) | 75.66 | 74.67 | 72.19 | 71.74 | 73.54 | 75.08 | 74.32 |
 
@@ -160,8 +162,8 @@ Performance is measured by classification accuracy (%)
 | NST | 58.16 | 64.96 | 71.28 | 74.12 | 74.68 | 74.89 |
 | CRD | 69.73 | 69.11 | 74.30 | 75.11 | 75.65 | 76.05 |
 | CRD+KD | 69.94 | 69.54 | 74.58 | 75.12 | 76.05 | 76.27 |
-| ICD (ours) | 68.35 | 67.39 | 73.85 | 74.26 | 75.26 | 74.98 |
-| ICD+KD (ours) | 69.55 | 69.91 | 74.08 | 75.27 | 76.58 | 76.51 |
+| DCD (ours) | 68.35 | 67.39 | 73.85 | 74.26 | 75.26 | 74.98 |
+| DCD+KD (ours) | 69.77 | 70.03 | 74.08 | 76.01 | 76.95 | 76.51 |
 | RRD (ours) | 67.93 | 68.84 | 74.01 | 74.11 | 74.80 | 74.98 |
 | RRD+KD (ours) | 69.98 | 69.13 | 74.26 | 75.18 | 76.83 | 76.31 |
 
@@ -178,11 +180,10 @@ Performance is measured by classification accuracy (%)
 | FitNet | 70.3 | 33.5 |
 | CRD | 71.6 | 35.6 |
 | CRD+KD | 72.2 | 35.5 |
-| ICD | 71.2 | 35.0 |
-| ICD+KD | 72.5 | 36.2 |
+| DCD | 71.2 | 35.0 |
+| DCD+KD | 72.5 | 36.2 |
 | RRD | 71.2 | 34.6 |
 | RRD+KD | 71.4 | 34.5 |
-
 
 
 ### Acknowledgments
