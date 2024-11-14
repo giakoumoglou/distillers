@@ -64,21 +64,16 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 
 3. This repo was tested with Ubuntu 16.04.5 LTS, Python 3.5, PyTorch 0.4.0, and CUDA 9.0. But it should be runnable with recent PyTorch versions >=0.4.0
 
-4. Fetch the pretrained teacher models by:
+### Running
+
+1. Fetch the pretrained teacher models by:
 
     ```
     sh scripts/fetch_pretrained_teachers.sh
     ```
-    
    which will download and save the models to `save/models`
-
-### Train Teacher Models
-
-(Optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
-
-### Train Student Models
-  
-1. Run distillation by following commands in `scripts/run_cifar_distill.sh`. An example of running Geoffrey's original Knowledge Distillation (KD) is given by:
+   
+2. Run distillation by following commands in `scripts/run_cifar_distill.sh`. An example of running Geoffrey's original Knowledge Distillation (KD) is given by:
 
     ```
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill kd --model_s resnet8x4 -r 0.1 -a 0.9 -b 0 --trial 1
@@ -102,7 +97,7 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill rrd --model_s resnet8x4 -a 0 -b 1 --trial 1
     ```
     
-2. Combining a distillation objective with KD is simply done by setting `-a` as a non-zero value.
+4. Combining a distillation objective with KD is simply done by setting `-a` as a non-zero value.
 
    The command for running **DCD+KD** is:
     ```
@@ -114,20 +109,21 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill rrd --model_s resnet8x4 -a 1 -b 1 --trial 1     
     ```
 
-### Transfer Learning
+5. Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
 
-Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
+    ```
+    python transfer_student.py --path_s <PATH_TO_WRN_16_2> --model_s wrn_16_2 --dataset stl10 --trial 1     
+    ```
 
-```
-python transfer_student.py --path_s <PATH_TO_WRN_16_2> --model_s wrn_16_2 --dataset stl10 --trial 1     
-```
-
-To download TinyImageNet-200, run the following script:
-```
-sh data/get_tinyimagenet.sh
-```
+   To download TinyImageNet-200, run the following script:
+   
+   ```
+   sh data/get_tinyimagenet.sh
+   ```
 
    The default directory to save datasets is `./data/`.
+
+6. (optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
 
 
 ### Benchmark Results on CIFAR-100
