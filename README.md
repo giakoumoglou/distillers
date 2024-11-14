@@ -87,9 +87,9 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
     - `-b`: the weight of other distillation losses, default: `None`
     - `--trial`: specify the experimental id to differentiate between multiple runs.
     
-    Therefore, the command for running **ICD** is:
+    Therefore, the command for running **DCD** is:
     ```
-    python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill icd --model_s resnet8x4 -a 0 -b 1 --trial 1
+    python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill dcd --model_s resnet8x4 -a 0 -b 1 --trial 1
     ```
     
 3. Combining a distillation objective with KD is simply done by setting `-a` as a non-zero value.
