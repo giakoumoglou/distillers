@@ -74,7 +74,7 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 
 ### Train Teacher Models
 
-1. (Optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
+(Optional) Train teacher networks from scratch. Example commands are in `scripts/run_cifar_vanilla.sh`
 
 ### Train Student Models
   
