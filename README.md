@@ -116,14 +116,12 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
 
 ### Transfer Learning
 
-   Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
-
+    Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
     ```
     python transfer_student.py --path_s <PATH_TO_WRN_16_2> --model_s wrn_16_2 --dataset stl10 --trial 1     
     ```
 
    To download TinyImageNet-200, run the following script:
-   
    ```
    sh data/get_tinyimagenet.sh
    ```
