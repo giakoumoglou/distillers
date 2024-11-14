@@ -1,4 +1,5 @@
-## DCD: Discriminative and Consistent Representation Distillation & RRD: Relational Representation Distillation
+## DCD: Discriminative and Consistent Representation Distillation 
+## RRD: Relational Representation Distillation
 
 This is a PyTorch implementation of the [DCD paper](https://arxiv.org/abs/2407.11802):
 
