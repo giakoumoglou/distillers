@@ -130,7 +130,7 @@ python transfer_student.py --path_s <PATH_TO_WRN_16_2> --model_s wrn_16_2 --data
 
 Performance is measured by classification accuracy (%)
 
-1. Teacher and student are of the **same** architectural type.
+Teacher and student are of the **same** architectural type.
 
 | Teacher <br> Student | wrn-40-2 <br> wrn-16-2 | wrn-40-2 <br> wrn-40-1 | resnet56 <br> resnet20 | resnet110 <br> resnet20 | resnet110 <br> resnet32 | resnet32x4 <br> resnet8x4 |  vgg13 <br> vgg8 |
 |:---------------:|:-----------------:|:-----------------:|:-----------------:|:------------------:|:------------------:|:--------------------:|:-----------:|
@@ -154,8 +154,7 @@ Performance is measured by classification accuracy (%)
 | RRD (ours) | 75.33 | 73.55 | 70.71 | 70.72 | 73.10 | 74.48 | 73.99 |
 | RRD+KD (ours) | 75.66 | 74.67 | 72.19 | 71.74 | 73.54 | 75.08 | 74.32 |
 
-
-2. Teacher and student are of **different** architectural type.
+Teacher and student are of **different** architectural type.
 
 | Teacher <br> Student | vgg13 <br> MobileNetV2 | ResNet50 <br> MobileNetV2 | ResNet50 <br> vgg8 | resnet32x4 <br> ShuffleNetV1 | resnet32x4 <br> ShuffleNetV2 | wrn-40-2 <br> ShuffleNetV1 |
 |:---------------:|:-----------------:|:--------------------:|:-------------:|:-----------------------:|:-----------------------:|:---------------------:|
