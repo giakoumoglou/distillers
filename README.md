@@ -91,21 +91,32 @@ This repo is based on [RepDistiller implementation](https://github.com/HobbitLon
     ```
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill dcd --model_s resnet8x4 -a 0 -b 1 --trial 1
     ```
+
+    While the command for running **RRD+KD** is:
+      ```
+    python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill rrd --model_s resnet8x4 -a 0 -b 1 --trial 1
+    ```
     
-3. Combining a distillation objective with KD is simply done by setting `-a` as a non-zero value.
+4. Combining a distillation objective with KD is simply done by setting `-a` as a non-zero value.
 
    The command for running **DCD+KD** is:
     ```
     python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill dcd --model_s resnet8x4 -a 1 -b 1 --trial 1     
     ```
 
-4. Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
+    While the command for running **RRD+KD** is:
+    ```
+    python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill rrd --model_s resnet8x4 -a 1 -b 1 --trial 1     
+    ```
+
+5. Run transfer learning on STL-10 and TinyImageNet-200 using the pretrained student model with frozen backbone is given by:
 
     ```
     python transfer_student.py --path_s <PATH_TO_WRN_16_2> --model_s wrn_16_2 --dataset stl10 --trial 1     
     ```
 
-    To download TinyImageNet-200, run the following script:
+   To download TinyImageNet-200, run the following script:
+   
    ```
    sh data/get_tinyimagenet.sh
    ```
@@ -184,11 +195,6 @@ Performance is measured by classification accuracy (%)
 | DCD+KD | 72.5 | 36.2 |
 | RRD | 71.2 | 34.6 |
 | RRD+KD | 71.4 | 34.5 |
-
-
-### Acknowledgments
-
-We would like to thank Yonglong Tian for creating the framework that served as the foundation for our experiments. His work significantly contributed to the development and evaluation of our method. The framework can be found at [https://github.com/HobbitLong/RepDistiller](https://github.com/HobbitLong/RepDistiller).
 
 ### License
 
