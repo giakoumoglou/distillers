@@ -121,11 +121,12 @@ def plot_tsne(features, labels, filename, num_classes):
 
 if __name__ == '__main__':
     opt = argparse.Namespace()
-    opt.dataset = 'cifar100'
     opt.method = 'RRD'
-    
+
+    #===========DO NOT CHANGE===========
+    opt.dataset = 'cifar100'
     opt.model_s = 'wrn_40_1'
-    opt.path_s = r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\RRD_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_5\ckpt_epoch_240.pth"
+    opt.path_s = METHOD_PATHS[opt.method]
     
     opt.model_t = 'wrn_40_2'
     opt.filename = f"tsne_{opt.method}_{opt.model_s}_{opt.model_t}"
