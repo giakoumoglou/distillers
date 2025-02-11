@@ -33,7 +33,7 @@ Please refer to [CIFAR-100](https://github.com/giakoumoglou/distillers/tree/mast
 
 ## ImageNet Classification
 
-Please refer to [ImageNet](https://github.com/giakoumoglou/distillers/tree/master/imagenet) for more details.
+Please refer to [ImageNet](https://github.com/giakoumoglou/distillers/tree/master/imagenet) for more details. Also support CIFAR-100 calssification.
 
 ## COCO Detection
 
