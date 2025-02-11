@@ -41,7 +41,7 @@ This repo is based on [SimKD implementation](https://github.com/DefangChen/SimKD
 8. `SemCKD` - Cross-Layer Distillation with Semantic Calibration
 9. `SimKD` - Knowledge Distillation with the Reused Teacher Classifier
 10. `RRD` - Relational Representation Distillation
-11. `DCD` - Discriminative and Consistent Distillatio
+11. `DCD` - Discriminative and Consistent Distillation
 
 
 ### Installation
