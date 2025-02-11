@@ -4,7 +4,7 @@ This is a PyTorch implementation of the [DCD paper](https://arxiv.org/abs/2407.1
 
 ```
 @misc{giakoumoglou2024discriminative,
-      title={DCD: Discriminative and Consistent Representation Distillation}, 
+      title={Discriminative and Consistent Representation Distillation}, 
       author={Nikolaos Giakoumoglou and Tania Stathaki},
       year={2024},
       eprint={2407.11802},
