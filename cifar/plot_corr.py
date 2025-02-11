@@ -19,19 +19,19 @@ MAX_DIFF = 3.0
 METHOD_PATHS = {
     'Vanilla': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\models\wrn_40_1_vanilla\ckpt_epoch_240.pth", 
     'Teacher': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\models\wrn_40_2_vanilla\ckpt_epoch_240.pth",
-    'KD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\KD_cifar100_S_wrn_40_1_T_wrn_40_2_r_0.1_a_0.9_b_0.0_trial_1\ckpt_epoch_240.pth",
-    'FitNets': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\HINT_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_100.0_trial_1\ckpt_epoch_240.pth",
-    'AT': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\ATTENTION_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1000.0_trial_1\ckpt_epoch_240.pth",
-    'SP': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\SIMILARITY_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_3000.0_trial_1\ckpt_epoch_240.pth",
-    'CC': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\CORRELATION_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_0.02_trial_1\ckpt_epoch_240.pth",
-    'VID': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\VID_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_1\ckpt_epoch_240.pth",
-    'RKD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\RKD_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_1\ckpt_epoch_240.pth",
-    'PKT': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\PKT_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_30000.0_trial_1\ckpt_epoch_240.pth",
-    'ABOUND': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\ABOUND_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_1\ckpt_epoch_240.pth",
-    'FT': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\FACTOR_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_200.0_trial_1\ckpt_epoch_240.pth",
-    'NST': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\NST_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_50.0_trial_1\ckpt_epoch_240.pth",
-    'CRD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\CRD_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_1\ckpt_epoch_240.pth",
-    'CRD+KD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\CRD_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_1.0_b_1.0_trial_1\ckpt_epoch_240.pth",
+    'KD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\KD_cifar100_S_wrn_40_1_T_wrn_40_2_r_0.1_a_0.9_b_0.0_trial_1\ckpt_epoch_240.pth",
+    'FitNets': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\HINT_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_100.0_trial_1\ckpt_epoch_240.pth",
+    'AT': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\ATTENTION_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1000.0_trial_1\ckpt_epoch_240.pth",
+    'SP': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\SIMILARITY_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_3000.0_trial_1\ckpt_epoch_240.pth",
+    'CC': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\CORRELATION_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_0.02_trial_1\ckpt_epoch_240.pth",
+    'VID': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\VID_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_1\ckpt_epoch_240.pth",
+    'RKD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\RKD_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_1\ckpt_epoch_240.pth",
+    'PKT': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\PKT_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_30000.0_trial_1\ckpt_epoch_240.pth",
+    'ABOUND': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\ABOUND_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_1\ckpt_epoch_240.pth",
+    'FT': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\FACTOR_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_200.0_trial_1\ckpt_epoch_240.pth",
+    'NST': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\NST_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_50.0_trial_1\ckpt_epoch_240.pth",
+    'CRD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_base\student_model\CRD_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_1\ckpt_epoch_240.pth",
+    'CRD+KD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student_baseent\student_model\CRD_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_1.0_b_1.0_trial_1\ckpt_epoch_240.pth",
     'RRD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\RRD_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_1.0_trial_1\ckpt_epoch_240.pth",
     'RRD+KD': r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\RRD_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.9_b_1.0_trial_1\ckpt_epoch_240.pth"
 }
@@ -131,14 +131,15 @@ def get_teacher_student_diff(tea_path, stu_path, tea_name, stu_name, dataset='ci
 
 if __name__ == "__main__":
     opt = argparse.Namespace()
-    opt.dataset = 'cifar100'
-    opt.method = 'NST'
+    opt.method = 'RRD'
     
+    #===========DO NOT CHANGE===========
+    opt.dataset = 'cifar100'
     opt.model_s = 'wrn_40_1'
-    opt.path_s = r'\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\student\student_model\NST_cifar100_S_wrn_40_1_T_wrn_40_2_r_1_a_0.0_b_50.0_trial_1\wrn_40_1_best.pth' #wrn_40_1_best
+    opt.path_s = METHOD_PATHS[opt.method]
 
     opt.model_t = 'wrn_40_2'
-    opt.path_t = r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\distillers\cifar\save\models\wrn_40_2_vanilla\ckpt_epoch_240.pth"
+    opt.path_t = r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\rrd\cifar\save\models\wrn_40_2_vanilla\ckpt_epoch_240.pth"
     
     filename = f"correlation_{opt.method}_{opt.model_s}_{opt.model_t}.png"
     
