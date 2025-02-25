@@ -38,10 +38,10 @@ python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240
 python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill crd --model_s resnet8x4 -a 0 -b 0.8 --trial 1
 # CRD+KD
 python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill crd --model_s resnet8x4 -a 1 -b 0.8 --trial 1
-# ICD
-#python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill icd --model_s resnet8x4 -a 0 -b 1.0 --trial 1
-# ICD+KD
-#python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill icd --model_s resnet8x4 -a 1 -b 1.0--trial 1
+# DCD
+#python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill dcd --model_s resnet8x4 -a 0 -b 1.0 --trial 1
+# DCD+KD
+#python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill dcd --model_s resnet8x4 -a 1 -b 1.0 --trial 1
 # RCD
 #python train_student.py --path_t ./save/models/resnet32x4_vanilla/ckpt_epoch_240.pth --distill rcd --model_s resnet8x4 -a 0 -b 1.0 --trial 1
 # RCD+KD
