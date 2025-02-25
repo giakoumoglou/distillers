@@ -20,11 +20,6 @@ from models import model_dict
 from datasets import get_stl10_dataloaders
 from datasets import get_tiny_imagenet_dataloaders
 
-import warnings
-warnings.filterwarnings('ignore')
-os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def parse_option():
 
