@@ -24,12 +24,6 @@ from distillers import DistillKL, HintLoss, Attention, Similarity, Correlation, 
                        VIDLoss, RKDLoss, PKT, ABLoss, FactorTransfer, KDSVD, \
                        FSP, NSTLoss, ITLoss, EGA, CRDLoss, RRDLoss
 
-import warnings
-warnings.filterwarnings('ignore')
-os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 def parse_option():
 
     parser = argparse.ArgumentParser('PyTorch Knowledge Distillation - Student training')
