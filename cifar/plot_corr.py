@@ -139,7 +139,7 @@ if __name__ == "__main__":
     opt.path_s = METHOD_PATHS[opt.method]
 
     opt.model_t = 'wrn_40_2'
-    opt.path_t = r"\\rds.imperial.ac.uk\RDS\user\ng1523\home\code\rrd\cifar\save\models\wrn_40_2_vanilla\ckpt_epoch_240.pth"
+    opt.path_t = r".\cifar\save\models\wrn_40_2_vanilla\ckpt_epoch_240.pth"
     
     filename = f"correlation_{opt.method}_{opt.model_s}_{opt.model_t}.png"
     
