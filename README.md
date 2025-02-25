@@ -31,7 +31,7 @@ It also includes the implementation of and [RRD paper](https://arxiv.org/abs/240
 
 Please refer to [CIFAR-100](https://github.com/giakoumoglou/distillers/tree/master/cifar) for more details.
 
-## ImageNet Classification
+## ImageNet ILSVRC-2012 Classification
 
 Please refer to [ImageNet](https://github.com/giakoumoglou/distillers/tree/master/imagenet) for more details. Also supports CIFAR-100 classification.
 
