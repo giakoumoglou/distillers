@@ -35,10 +35,6 @@ Please refer to [CIFAR-100](https://github.com/giakoumoglou/distillers/tree/mast
 
 Please refer to [ImageNet](https://github.com/giakoumoglou/distillers/tree/master/imagenet) for more details. Also supports CIFAR-100 classification.
 
-## COCO Detection
-
-Please refer to [COCO](https://github.com/giakoumoglou/distillers/tree/master/detection) for more details.
-
 ### License
 
 This project is under the CC-BY-NC 4.0 license. See [LICENSE](LICENSE) for details.
