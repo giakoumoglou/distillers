@@ -1,4 +1,4 @@
-## Distillers
+## Representation Distillation
 
 This is a PyTorch implementation of the [RRD paper](https://arxiv.org/abs/2407.12073):
 ```
