@@ -46,8 +46,8 @@ This repository benchmarks the following knowledge distillation methods in PyTor
 11. `FSP` - A Gift from Knowledge Distillation: Fast Optimization, Network Minimization and Transfer Learning  
 12. `NST` - Like What You Like: Knowledge Distill via Neuron Selectivity Transfer  
 13. `CRD` - Contrastive Representation Distillation  
-14. `RRD` - Relational Representation Distillation
-15. `DCD` - Discriminative and Consistent Distillation
+14. `RRD` - Relational Representation Distillation ([arXiv](https://arxiv.org/abs/2407.12073))
+15. `DCD` - Discriminative and Consistent Representation Distillation ([arXiv](https://arxiv.org/abs/2407.11802))
 
 ### Installation
 
