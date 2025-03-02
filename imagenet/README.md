@@ -40,8 +40,8 @@ This repo is based on [SimKD implementation](https://github.com/DefangChen/SimKD
 7. `SRRL` - Knowledge distillation via softmax regression representation learning
 8. `SemCKD` - Cross-Layer Distillation with Semantic Calibration
 9. `SimKD` - Knowledge Distillation with the Reused Teacher Classifier
-10. `RRD` - Relational Representation Distillation
-11. `DCD` - Discriminative and Consistent Distillation
+10. `RRD` - Relational Representation Distillation ([arXiv](https://arxiv.org/abs/2407.12073))
+11. `DCD` - Discriminative and Consistent Representation Distillation ([arXiv](https://arxiv.org/abs/2407.11802))
 
 
 ### Installation
